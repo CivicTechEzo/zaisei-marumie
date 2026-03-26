@@ -2,10 +2,10 @@
 
 ## アプリケーション概要
 
-政治家・政治団体が会計データを透明に公開し、市民が政治資金の流れを理解しやすくするためのWebアプリケーションです。クラウド会計ソフト（MFクラウド・freee等）から取得したデータを可視化し、政治資金報告書の作成も支援します。
+北海道内の自治体（道を含む）の歳入・歳出データを可視化し、住民が財政状況を直視できるようにするためのWebアプリケーションです。[team-mirai/marumie](https://github.com/team-mirai/marumie)（政治資金可視化アプリ）をベースに、自治体財政の文脈で開発しています。
 
-- webapp（公開用フロントエンド）は既に稼働中
-- admin（管理画面）では政治資金報告書XML生成機能を開発中
+- webapp（公開用フロントエンド）: 住民向けの財政データ可視化ダッシュボード
+- admin（管理画面）: 財政データの取り込み・管理
 - 技術スタック: Next.js 15 (App Router) / Prisma / Supabase (PostgreSQL) / Vercel / pnpm
 - 詳細は [README.md](README.md) を参照
 
@@ -28,9 +28,8 @@ webapp / admin ともに Bounded Context パターンとレイヤードアーキ
 
 | アプリ | コンテキスト | 責務 |
 |--------|-------------|------|
-| webapp | **public-finance** | 政治資金データの公開・可視化 |
-| admin | **data-import** | MFクラウドCSVインポート、取引データプレビュー |
-| admin | **report** | 政治資金報告書XML生成、Counterpart（取引先）管理 |
+| webapp | **public-finance** | 自治体財政データの公開・可視化 |
+| admin | **data-import** | 財政データインポート、取引データプレビュー |
 | admin | **auth** | 認証・認可、ユーザー管理 |
 | 共通 | **shared** | コンテキスト横断で共有（prisma client、汎用リポジトリなど） |
 
