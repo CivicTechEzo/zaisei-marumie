@@ -29,7 +29,7 @@
   },
   "scripts": {
     "postinstall": "pnpm exec playwright install chromium",
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack --hostname 0.0.0.0",
     "build": "next build",
     "build:vercel": "pnpm run db:setup && pnpm run build",
     "db:setup": "cd .. && prisma generate && prisma migrate deploy",

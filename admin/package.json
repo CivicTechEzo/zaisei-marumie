@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "postinstall": "pnpm exec playwright install chromium",
-    "dev": "next dev --turbopack --port 3001",
+    "dev": "next dev --turbopack --port 3001 --hostname 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
