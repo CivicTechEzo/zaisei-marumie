@@ -97,7 +97,7 @@ const socialLinks = [
   },
   {
     name: "GitHub",
-    href: "https://github.com/team-mirai-volunteer/marumie",
+    href: "https://github.com/CivicTechEzo/zaisei-marumie",
     icon: "icon-github.svg",
   },
 ];

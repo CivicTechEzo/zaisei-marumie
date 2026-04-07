@@ -1,6 +1,6 @@
 # 開発環境セットアップガイド
 
-このドキュメントは、初めて marumie プロジェクトをクローンする人向けのセットアップ手順をまとめたものです。
+このドキュメントは、初めて zaisei-marumie プロジェクトをクローンする人向けのセットアップ手順をまとめたものです。
 
 ## 動作環境
 
@@ -30,8 +30,8 @@
 ## 2. リポジトリのクローン
 
 ```bash
-git clone https://github.com/team-mirai/marumie.git
-cd marumie
+git clone https://github.com/CivicTechEzo/zaisei-marumie.git
+cd zaisei-marumie
 ```
 
 ## 3. 環境変数ファイルの作成
