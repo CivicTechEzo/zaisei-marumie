@@ -27,7 +27,8 @@ export function DownloadButton({ politicalOrganizationId, financialYear }: Downl
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = filename || `marumie_xml_${politicalOrganizationId}_${financialYear}.xml`;
+        link.download =
+          filename || `zaisei_marumie_xml_${politicalOrganizationId}_${financialYear}.xml`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
