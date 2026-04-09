@@ -8,6 +8,10 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// ============================================================
+// 認証・マルチテナント基盤（維持）
+// ============================================================
+
 model User {
   id        String   @id @default(uuid())
   authId    String   @unique @map("auth_id")
@@ -29,10 +33,8 @@ model Tenant {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  politicalOrganizations PoliticalOrganization[]
-  counterparts           Counterpart[]
-  donors                 Donor[]
-  memberships            UserTenantMembership[]
+  municipalities Municipality[]
+  memberships    UserTenantMembership[]
 
   @@map("tenants")
 }
@@ -54,172 +56,160 @@ model UserTenantMembership {
   @@map("user_tenant_memberships")
 }
 
-model PoliticalOrganization {
-  id               BigInt            @id @default(autoincrement())
-  displayName      String            @map("display_name") @db.VarChar(255)
+// ============================================================
+// 自治体（旧PoliticalOrganization → Municipality に改名）
+// ============================================================
+
+model Municipality {
+  id               BigInt           @id @default(autoincrement())
+  displayName      String           @map("display_name") @db.VarChar(255)
+  slug             String           @unique @db.VarChar(255)
   description      String?
-  createdAt        DateTime          @default(now()) @map("created_at")
-  updatedAt        DateTime          @updatedAt @map("updated_at")
-  slug             String            @unique @db.VarChar(255)
-  orgName          String?           @map("org_name") @db.VarChar(255)
+  municipalityCode String           @unique @map("municipality_code") @db.VarChar(6)
+  municipalityType MunicipalityType @map("municipality_type")
+  area             Float?
 
   tenantId BigInt? @map("tenant_id")
   tenant   Tenant? @relation(fields: [tenantId], references: [id])
 
-  balanceSnapshots BalanceSnapshot[]
-  reportProfiles   OrganizationReportProfile[]
-  transactions     Transaction[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  fiscalYearSettlements FiscalYearSettlement[]
 
   @@index([tenantId])
-  @@map("political_organizations")
+  @@map("municipalities")
 }
 
-model Transaction {
-  id                       BigInt                   @id @default(autoincrement())
-  politicalOrganizationId  BigInt                   @map("political_organization_id")
-  transactionNo            String                   @map("transaction_no") @db.VarChar(255)
-  transactionDate          DateTime                 @map("transaction_date") @db.Date
-  financialYear            Int                      @map("financial_year")
-  transactionType          TransactionType          @map("transaction_type")
-  debitAccount             String                   @map("debit_account") @db.VarChar(255)
-  debitSubAccount          String?                  @map("debit_sub_account") @db.VarChar(255)
-  debitDepartment          String?                  @map("debit_department") @db.VarChar(255)
-  debitPartner             String?                  @map("debit_partner") @db.VarChar(255)
-  debitTaxCategory         String?                  @map("debit_tax_category") @db.VarChar(255)
-  debitAmount              Decimal                  @map("debit_amount") @db.Decimal(15, 2)
-  creditAccount            String                   @map("credit_account") @db.VarChar(255)
-  creditSubAccount         String?                  @map("credit_sub_account") @db.VarChar(255)
-  creditDepartment         String?                  @map("credit_department") @db.VarChar(255)
-  creditPartner            String?                  @map("credit_partner") @db.VarChar(255)
-  creditTaxCategory        String?                  @map("credit_tax_category") @db.VarChar(255)
-  creditAmount             Decimal                  @map("credit_amount") @db.Decimal(15, 2)
-  description              String?
-  createdAt                DateTime                 @default(now()) @map("created_at")
-  updatedAt                DateTime                 @updatedAt @map("updated_at")
-  memo                     String?
-  friendlyCategory         String?                  @map("friendly_category")
-  categoryKey              String                   @map("category_key") @db.VarChar(255)
-  label                    String                   @default("") @db.VarChar(255)
-  hash                     String                   @default("") @db.VarChar(255)
-  isGrantExpenditure       Boolean                  @default(false) @map("is_grant_expenditure")
-  politicalOrganization    PoliticalOrganization    @relation(fields: [politicalOrganizationId], references: [id], onDelete: Cascade)
-  transactionCounterparts  TransactionCounterpart[]
-  transactionDonors        TransactionDonor[]
+// ============================================================
+// 年度別決算データ（新規）
+// 決算カードの1行（= 1自治体 × 1年度）に対応
+// ============================================================
 
-  @@unique([politicalOrganizationId, transactionNo])
-  @@index([politicalOrganizationId, financialYear, transactionType, transactionDate(sort: Desc)])
-  @@map("transactions")
-}
+model FiscalYearSettlement {
+  id             BigInt @id @default(autoincrement())
+  municipalityId BigInt @map("municipality_id")
+  fiscalYear     Int    @map("fiscal_year")
 
-model Counterpart {
-  id         BigInt   @id @default(autoincrement())
-  name       String   @db.VarChar(120)
-  postalCode String?  @db.VarChar(10) @map("postal_code")
-  address    String?  @db.VarChar(120)
+  // ----------------------------------------------------------
+  // 歳入（款レベル） — 単位: 千円
+  // ----------------------------------------------------------
+  revLocalTax              BigInt @default(0) @map("rev_local_tax")              // 地方税
+  revLocalTransferTax      BigInt @default(0) @map("rev_local_transfer_tax")     // 地方譲与税
+  revStockTransferTax      BigInt @default(0) @map("rev_stock_transfer_tax")     // 利子割交付金
+  revDividendTransferTax   BigInt @default(0) @map("rev_dividend_transfer_tax")  // 配当割交付金
+  revCapitalGainsTransferTax BigInt @default(0) @map("rev_capital_gains_transfer_tax") // 株式等譲渡所得割交付金
+  revLocalConsumptionTax   BigInt @default(0) @map("rev_local_consumption_tax")  // 地方消費税交付金
+  revGolfCourseTax         BigInt @default(0) @map("rev_golf_course_tax")        // ゴルフ場利用税交付金
+  revEnvironmentTax        BigInt @default(0) @map("rev_environment_tax")        // 環境性能割交付金
+  revNationalPropertyTax   BigInt @default(0) @map("rev_national_property_tax")  // 国有提供施設等所在市町村助成交付金
+  revSpecialTonnageTax     BigInt @default(0) @map("rev_special_tonnage_tax")    // 地方特例交付金
+  revLocalAllocationTax    BigInt @default(0) @map("rev_local_allocation_tax")   // 地方交付税
+  revLocalAllocationOrdinary BigInt @default(0) @map("rev_local_allocation_ordinary") // 地方交付税（普通）
+  revLocalAllocationSpecial BigInt @default(0) @map("rev_local_allocation_special")   // 地方交付税（特別）
+  revTrafficSafetyTax      BigInt @default(0) @map("rev_traffic_safety_tax")     // 交通安全対策特別交付金
+  revSharedBurden          BigInt @default(0) @map("rev_shared_burden")          // 分担金・負担金
+  revUsageFees             BigInt @default(0) @map("rev_usage_fees")             // 使用料
+  revServiceFees           BigInt @default(0) @map("rev_service_fees")           // 手数料
+  revNationalSubsidy       BigInt @default(0) @map("rev_national_subsidy")       // 国庫支出金
+  revPrefectureSubsidy     BigInt @default(0) @map("rev_prefecture_subsidy")     // 都道府県支出金
+  revPropertyIncome        BigInt @default(0) @map("rev_property_income")        // 財産収入
+  revDonations             BigInt @default(0) @map("rev_donations")              // 寄附金
+  revTransfersIn           BigInt @default(0) @map("rev_transfers_in")           // 繰入金
+  revCarryover             BigInt @default(0) @map("rev_carryover")              // 繰越金
+  revMiscellaneous         BigInt @default(0) @map("rev_miscellaneous")          // 諸収入
+  revLocalBond             BigInt @default(0) @map("rev_local_bond")             // 地方債
+  revTotal                 BigInt @default(0) @map("rev_total")                  // 歳入合計
+
+  // ----------------------------------------------------------
+  // 歳出・目的別（款レベル） — 単位: 千円
+  // ----------------------------------------------------------
+  expAssembly              BigInt @default(0) @map("exp_assembly")               // 議会費
+  expGeneralAdmin          BigInt @default(0) @map("exp_general_admin")          // 総務費
+  expWelfare               BigInt @default(0) @map("exp_welfare")                // 民生費
+  expHealth                BigInt @default(0) @map("exp_health")                 // 衛生費
+  expLabor                 BigInt @default(0) @map("exp_labor")                  // 労働費
+  expAgriculture           BigInt @default(0) @map("exp_agriculture")            // 農林水産業費
+  expCommerce              BigInt @default(0) @map("exp_commerce")               // 商工費
+  expCivilEngineering      BigInt @default(0) @map("exp_civil_engineering")      // 土木費
+  expFirefighting          BigInt @default(0) @map("exp_firefighting")           // 消防費
+  expEducation             BigInt @default(0) @map("exp_education")              // 教育費
+  expDisasterRecovery      BigInt @default(0) @map("exp_disaster_recovery")      // 災害復旧費
+  expDebtService           BigInt @default(0) @map("exp_debt_service")           // 公債費
+  expPurposeOther          BigInt @default(0) @map("exp_purpose_other")          // その他
+  expPurposeTotal          BigInt @default(0) @map("exp_purpose_total")          // 歳出合計（目的別）
+
+  // ----------------------------------------------------------
+  // 歳出・性質別 — 単位: 千円
+  // ----------------------------------------------------------
+  expPersonnel             BigInt @default(0) @map("exp_personnel")              // 人件費
+  expPersonnelSalary       BigInt @default(0) @map("exp_personnel_salary")       // 人件費（うち職員給）
+  expAssistance            BigInt @default(0) @map("exp_assistance")             // 扶助費
+  expDebtServiceNature     BigInt @default(0) @map("exp_debt_service_nature")    // 公債費（性質別）
+  expMandatoryTotal        BigInt @default(0) @map("exp_mandatory_total")        // 義務的経費計
+  expMaterials             BigInt @default(0) @map("exp_materials")              // 物件費
+  expMaintenance           BigInt @default(0) @map("exp_maintenance")            // 維持補修費
+  expSubsidies             BigInt @default(0) @map("exp_subsidies")              // 補助費等
+  expReserves              BigInt @default(0) @map("exp_reserves")               // 積立金
+  expInvestmentLoans       BigInt @default(0) @map("exp_investment_loans")       // 投資・出資・貸付金
+  expTransfersOut          BigInt @default(0) @map("exp_transfers_out")          // 繰出金
+  expConstructionSubsidy   BigInt @default(0) @map("exp_construction_subsidy")   // 普通建設事業費（補助）
+  expConstructionIndependent BigInt @default(0) @map("exp_construction_independent") // 普通建設事業費（単独）
+  expConstructionTotal     BigInt @default(0) @map("exp_construction_total")     // 普通建設事業費（計）
+  expDisasterRecoveryNature BigInt @default(0) @map("exp_disaster_recovery_nature") // 災害復旧事業費（性質別）
+  expNatureOther           BigInt @default(0) @map("exp_nature_other")           // その他
+  expNatureTotal           BigInt @default(0) @map("exp_nature_total")           // 歳出合計（性質別）
+
+  // ----------------------------------------------------------
+  // 財政指標
+  // ----------------------------------------------------------
+  fiscalPowerIndex         Decimal @default(0) @map("fiscal_power_index") @db.Decimal(5, 3)          // 財政力指数
+  currentBalanceRatio      Decimal @default(0) @map("current_balance_ratio") @db.Decimal(5, 1)       // 経常収支比率（%）
+  realBalanceRatio         Decimal @default(0) @map("real_balance_ratio") @db.Decimal(5, 1)          // 実質収支比率（%）
+  realDebtServiceRatio     Decimal @default(0) @map("real_debt_service_ratio") @db.Decimal(5, 1)     // 実質公債費比率（%）
+  debtBurdenRatio          Decimal @default(0) @map("debt_burden_ratio") @db.Decimal(5, 1)           // 公債費負担比率（%）
+  standardFiscalScale      BigInt  @default(0) @map("standard_fiscal_scale")                         // 標準財政規模
+  basicFiscalRevenue       BigInt  @default(0) @map("basic_fiscal_revenue")                          // 基準財政収入額
+  basicFiscalDemand        BigInt  @default(0) @map("basic_fiscal_demand")                           // 基準財政需要額
+
+  // ----------------------------------------------------------
+  // ストック情報 — 単位: 千円
+  // ----------------------------------------------------------
+  reserveFundTotal         BigInt @default(0) @map("reserve_fund_total")         // 積立金現在高（合計）
+  reserveFundFiscal        BigInt @default(0) @map("reserve_fund_fiscal")        // 財政調整基金
+  reserveFundDebt          BigInt @default(0) @map("reserve_fund_debt")          // 減債基金
+  reserveFundOther         BigInt @default(0) @map("reserve_fund_other")         // その他特定目的基金
+  localBondBalance         BigInt @default(0) @map("local_bond_balance")         // 地方債現在高
+
+  // ----------------------------------------------------------
+  // メタデータ（年度ごとに変動）
+  // ----------------------------------------------------------
+  population               Int     @default(0)                                   // 人口
+  similarGroupCode         String  @default("") @map("similar_group_code") @db.VarChar(20) // 類似団体区分
+
+  // ----------------------------------------------------------
+  // 取り込み管理
+  // ----------------------------------------------------------
+  dataSource String   @default("manual") @map("data_source") @db.VarChar(50) // "e-stat" | "decision-card" | "manual"
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
-  tenantId BigInt? @map("tenant_id")
-  tenant   Tenant? @relation(fields: [tenantId], references: [id])
+  municipality Municipality @relation(fields: [municipalityId], references: [id], onDelete: Cascade)
 
-  transactionCounterparts TransactionCounterpart[]
-
-  @@unique([name, address])
-  @@index([tenantId])
-  @@map("counterparts")
+  @@unique([municipalityId, fiscalYear])
+  @@index([municipalityId])
+  @@map("fiscal_year_settlements")
 }
 
-model TransactionCounterpart {
-  id            BigInt      @id @default(autoincrement())
-  transactionId BigInt      @map("transaction_id")
-  counterpartId BigInt      @map("counterpart_id")
-  createdAt     DateTime    @default(now()) @map("created_at")
+// ============================================================
+// Enum定義
+// ============================================================
 
-  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  counterpart Counterpart @relation(fields: [counterpartId], references: [id], onDelete: Cascade)
-
-  @@unique([transactionId, counterpartId])
-  @@unique([transactionId])
-  @@index([transactionId], name: "idx_transaction_counterparts_transaction")
-  @@index([counterpartId], name: "idx_transaction_counterparts_counterpart")
-  @@map("transaction_counterparts")
-}
-
-model BalanceSnapshot {
-  id                      BigInt                @id @default(autoincrement())
-  politicalOrganizationId BigInt                @map("political_organization_id")
-  snapshotDate            DateTime              @map("snapshot_date") @db.Date
-  balance                 Decimal               @db.Decimal(15, 2)
-  createdAt               DateTime              @default(now()) @map("created_at")
-  updatedAt               DateTime              @updatedAt @map("updated_at")
-  politicalOrganization   PoliticalOrganization @relation(fields: [politicalOrganizationId], references: [id], onDelete: Cascade)
-
-  @@index([politicalOrganizationId, snapshotDate(sort: Desc), updatedAt(sort: Desc)])
-  @@map("balance_snapshots")
-}
-
-model Donor {
-  id                BigInt            @id @default(autoincrement())
-  donorType         DonorType         @map("donor_type")
-  name              String            @db.VarChar(120)
-  address           String?           @db.VarChar(120)
-  occupation        String?           @db.VarChar(50)
-  createdAt         DateTime          @default(now()) @map("created_at")
-  updatedAt         DateTime          @updatedAt @map("updated_at")
-
-  tenantId BigInt? @map("tenant_id")
-  tenant   Tenant? @relation(fields: [tenantId], references: [id])
-
-  transactionDonors TransactionDonor[]
-
-  @@unique([name, address, donorType])
-  @@index([tenantId])
-  @@map("donors")
-}
-
-model TransactionDonor {
-  id            BigInt      @id @default(autoincrement())
-  transactionId BigInt      @map("transaction_id")
-  donorId       BigInt      @map("donor_id")
-  createdAt     DateTime    @default(now()) @map("created_at")
-
-  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  donor       Donor       @relation(fields: [donorId], references: [id], onDelete: Cascade)
-
-  @@unique([transactionId, donorId])
-  @@unique([transactionId])
-  @@index([transactionId], name: "idx_transaction_donors_transaction")
-  @@index([donorId], name: "idx_transaction_donors_donor")
-  @@map("transaction_donors")
-}
-
-model OrganizationReportProfile {
-  id                      BigInt   @id @default(autoincrement())
-  politicalOrganizationId BigInt   @map("political_organization_id")
-  financialYear           Int      @map("financial_year")
-
-  officialName            String?  @map("official_name") @db.VarChar(120)
-  officialNameKana        String?  @map("official_name_kana") @db.VarChar(120)
-  officeAddress           String?  @map("office_address") @db.VarChar(80)
-  officeAddressBuilding   String?  @map("office_address_building") @db.VarChar(60)
-
-  details                 Json     @default("{}")
-
-  createdAt               DateTime @default(now()) @map("created_at")
-  updatedAt               DateTime @updatedAt @map("updated_at")
-
-  politicalOrganization   PoliticalOrganization @relation(fields: [politicalOrganizationId], references: [id], onDelete: Cascade)
-
-  @@unique([politicalOrganizationId, financialYear])
-  @@map("organization_report_profiles")
-}
-
-enum TransactionType {
-  income
-  expense
-  non_cash_journal
-  offset_income
-  offset_expense
+enum MunicipalityType {
+  prefecture // 道
+  city       // 市
+  town       // 町
+  village    // 村
 }
 
 enum UserRole {
@@ -231,10 +221,4 @@ enum TenantRole {
   owner
   admin
   editor
-}
-
-enum DonorType {
-  individual
-  corporation
-  political_organization
 }
