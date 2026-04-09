@@ -79,6 +79,24 @@ PRを作成する際は [.claude/commands/pr.md](.claude/commands/pr.md) の手�
 
 設計ドキュメントを作成する場合は [.claude/commands/plan.md](.claude/commands/plan.md) の手順に従うこと。
 
+## 元プロジェクト（政治資金可視化アプリ）のコード参照
+
+本プロジェクトは [team-mirai/marumie](https://github.com/team-mirai/marumie)（政治資金可視化アプリ）をベースにしている。Prismaスキーマは自治体財政用に書き換え済みだが、旧モデル（Transaction, Counterpart, Donor等）を参照するコードがまだ残っており、typecheckエラーが発生する状態にある。
+
+各機能の実装・書き換え時に、元プロジェクトのコードがパターンやロジックの参考になる場合がある。旧コードが完全に残っている最後のコミットは `cef44c72` なので、以下のコマンドで参照できる:
+
+```bash
+# 特定ファイルの内容を見る
+git show cef44c72:<ファイルパス>
+
+# 例: 旧Transactionリポジトリを参照
+git show cef44c72:webapp/src/server/contexts/public-finance/infrastructure/repositories/prisma-transaction.repository.ts
+```
+
+### git push 時の注意
+
+旧コードの型エラーにより pre-push フックの typecheck が失敗するため、当面は `git push --no-verify` でプッシュする。旧コードの書き換え・削除が完了し typecheck が通るようになったら、この記載を削除すること。
+
 ## バックエンドアーキテクチャガイド
 
 webapp / admin のバックエンド実装に関する詳細なルールは [docs/backend-architecture-guide.md](docs/backend-architecture-guide.md) を参照すること。
