@@ -14,7 +14,7 @@ export default function NewPoliticalOrganizationPage() {
     <PoliticalOrganizationForm
       onSubmit={handleSubmit}
       submitButtonText="作成"
-      title="新しい政治団体を作成"
+      title="新しい自治体を作成"
     />
   );
 }

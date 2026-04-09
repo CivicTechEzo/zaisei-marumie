@@ -23,7 +23,7 @@ export async function previewCsv(data: PreviewCsvRequest): Promise<PreviewMfCsvR
     }
 
     if (!politicalOrganizationId) {
-      throw new Error("政治団体IDが指定されていません");
+      throw new Error("自治体IDが指定されていません");
     }
 
     // Convert file to buffer and then to properly encoded string

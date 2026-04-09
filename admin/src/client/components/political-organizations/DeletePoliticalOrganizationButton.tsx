@@ -17,9 +17,7 @@ export function DeletePoliticalOrganizationButton({
 
   const handleDelete = async () => {
     if (
-      !window.confirm(
-        `政治団体「${orgName}」を削除してもよろしいですか？この操作は取り消せません。`,
-      )
+      !window.confirm(`自治体「${orgName}」を削除してもよろしいですか？この操作は取り消せません。`)
     ) {
       return;
     }

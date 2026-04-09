@@ -36,7 +36,7 @@ export default function TransactionsSection({
     <MainColumnCard id="transactions">
       <CardHeader
         icon={<Image src="/icons/icon-cashback.svg" alt="Cash move icon" width={30} height={30} />}
-        organizationName={organizationName || "未登録の政治団体"}
+        organizationName={organizationName || "未登録の自治体"}
         title="すべての出入金"
         updatedAt={updatedAt}
         subtitle="これまでにデータ連携された出入金の明細"

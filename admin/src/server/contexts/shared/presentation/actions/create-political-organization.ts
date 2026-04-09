@@ -30,6 +30,6 @@ export async function createPoliticalOrganization(data: CreatePoliticalOrganizat
       throw new Error("このスラッグは既に使用されています");
     }
 
-    throw new Error(error instanceof Error ? error.message : "政治団体の作成に失敗しました");
+    throw new Error(error instanceof Error ? error.message : "自治体の作成に失敗しました");
   }
 }

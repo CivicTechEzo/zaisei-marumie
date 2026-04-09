@@ -79,7 +79,7 @@ export default function OrganizationYearSheet({
       >
         <span className="flex flex-col gap-1.5 items-start flex-1 min-w-0 leading-none">
           <span className="text-[14px] leading-none text-black truncate w-full text-left">
-            {currentOrganization?.displayName || "政治団体を選択"}
+            {currentOrganization?.displayName || "自治体を選択"}
           </span>
           <span className="text-[9px] leading-none text-[#238778]">{currentYear}年</span>
         </span>

@@ -16,7 +16,7 @@ export const loadPoliticalOrganizationsData = unstable_cache(
       return await usecase.execute();
     } catch (error) {
       console.error("Error fetching political organizations:", error);
-      throw new Error("政治団体の取得に失敗しました");
+      throw new Error("自治体の取得に失敗しました");
     }
   },
   ["political-organizations-data"],

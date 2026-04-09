@@ -10,7 +10,7 @@ export default async function PoliticalOrganizationsPage() {
   return (
     <div className="bg-card rounded-xl p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-white">政治団体一覧</h1>
+        <h1 className="text-2xl font-bold text-white">自治体一覧</h1>
         <Link
           href="/political-organizations/new"
           className="bg-primary text-white border-0 rounded-lg px-4 py-2.5 font-medium no-underline hover:bg-blue-600 transition-colors duration-200"
@@ -21,12 +21,12 @@ export default async function PoliticalOrganizationsPage() {
 
       {organizations.length === 0 && (
         <div className="text-center py-10">
-          <p className="text-muted-foreground">政治団体が登録されていません</p>
+          <p className="text-muted-foreground">自治体が登録されていません</p>
           <Link
             href="/political-organizations/new"
             className="bg-primary text-white border-0 rounded-lg px-4 py-2.5 font-medium no-underline hover:bg-blue-600 transition-colors duration-200 mt-4 inline-block"
           >
-            最初の政治団体を作成
+            最初の自治体を作成
           </Link>
         </div>
       )}

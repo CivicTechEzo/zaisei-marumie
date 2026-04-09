@@ -64,7 +64,7 @@ const MOCK_TRANSACTION_DATA = {
   totalPages: 0,
   politicalOrganization: {
     id: "mock-org-id",
-    name: "モック政治団体",
+    name: "モック自治体",
     slug: "mock-slug",
     createdAt: new Date(),
     updatedAt: new Date(),

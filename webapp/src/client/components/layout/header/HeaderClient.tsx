@@ -12,8 +12,8 @@ const getNavigationItems = (currentSlug: string, currentYear: number) => [
   { href: `/o/${currentSlug}/${currentYear}/`, label: "トップ", desktopLabel: null },
   {
     href: `/o/${currentSlug}/${currentYear}/#cash-flow`,
-    label: "チームみらいの収支の流れ",
-    desktopLabel: "収支の流れ",
+    label: "歳入・歳出の流れ",
+    desktopLabel: "歳入・歳出の流れ",
   },
   {
     href: `/o/${currentSlug}/${currentYear}/#monthly-trends`,
@@ -34,11 +34,6 @@ const getNavigationItems = (currentSlug: string, currentYear: number) => [
     href: `/o/${currentSlug}/${currentYear}/#explanation`,
     label: "データについて",
     desktopLabel: "データについて",
-  },
-  {
-    href: "https://team-mirai.notion.site/FAQ-27ef6f56bae180c085e9f97d05a5d59c",
-    label: "よくあるご質問",
-    desktopLabel: "よくあるご質問",
   },
 ];
 
@@ -75,10 +70,10 @@ export default function HeaderClient({ organizations }: HeaderClientProps) {
             {/* Logo */}
             <div className="flex items-center">
               <div className="w-14 h-12 xl:w-12 xl:h-11 relative">
-                {/* Team Mirai Logo */}
+                {/* TODO: CivicTechEzo ロゴアセット未作成。用意でき次第差し替え */}
                 <Image
                   src="/logos/team-mirai-logo.svg"
-                  alt="Team Mirai Logo"
+                  alt="CivicTechEzo"
                   fill
                   className="object-contain"
                 />
@@ -91,7 +86,7 @@ export default function HeaderClient({ organizations }: HeaderClientProps) {
               <div className="h-[45px] relative w-[126px] xl:hidden">
                 <Image
                   src="/logos/service-logo-sp.svg"
-                  alt="みらいまる見え政治資金"
+                  alt="自治体財政まる見え"
                   fill
                   className="object-contain object-left"
                   priority
@@ -101,7 +96,7 @@ export default function HeaderClient({ organizations }: HeaderClientProps) {
               <div className="hidden xl:block h-7 relative w-[300px]">
                 <Image
                   src="/logos/service-logo-pc.svg"
-                  alt="みらいまる見え政治資金"
+                  alt="自治体財政まる見え"
                   fill
                   className="object-contain object-left"
                   priority

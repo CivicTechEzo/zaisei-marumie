@@ -4,7 +4,7 @@ import { Toaster } from "@/client/components/ui";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "政治資金ダッシュボード管理画面",
+  title: "自治体財政データ管理画面",
   robots: {
     index: false,
     follow: false,

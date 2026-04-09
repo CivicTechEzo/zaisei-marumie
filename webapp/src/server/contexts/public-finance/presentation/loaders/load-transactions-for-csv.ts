@@ -40,7 +40,7 @@ export async function downloadTransactionsCsv(slug: string, year: number) {
     });
 
     // CSVヘッダー
-    const headers = ["日付", "政治団体名", "タイプ", "金額", "カテゴリ", "詳細区分", "ラベル"];
+    const headers = ["日付", "自治体名", "タイプ", "金額", "カテゴリ", "詳細区分", "ラベル"];
 
     // CSVデータを作成
     const csvRows = [

@@ -11,12 +11,12 @@ export class GetPoliticalOrganizationUsecase {
       const organization = await this.repository.findById(id);
 
       if (!organization) {
-        throw new Error("政治団体が見つかりません");
+        throw new Error("自治体が見つかりません");
       }
 
       return organization;
     } catch (error) {
-      if (error instanceof Error && error.message === "政治団体が見つかりません") {
+      if (error instanceof Error && error.message === "自治体が見つかりません") {
         throw error;
       }
       throw new Error(

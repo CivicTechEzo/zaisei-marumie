@@ -79,7 +79,7 @@ export function PoliticalOrganizationForm({
             href="/political-organizations"
             className="text-muted-foreground no-underline hover:text-foreground transition-colors"
           >
-            ← 政治団体一覧に戻る
+            ← 自治体一覧に戻る
           </Link>
         </div>
         <CardTitle className="text-2xl">{title}</CardTitle>
@@ -148,7 +148,7 @@ export function PoliticalOrganizationForm({
               value={formData.description}
               onChange={handleInputChange}
               className="max-w-md min-h-24 resize-y"
-              placeholder="政治団体の説明を入力してください"
+              placeholder="自治体の説明を入力してください"
               disabled={isLoading}
             />
           </div>

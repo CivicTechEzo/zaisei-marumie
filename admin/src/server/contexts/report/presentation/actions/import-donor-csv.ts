@@ -35,7 +35,7 @@ export async function importDonorCsv(data: ImportDonorCsvRequest): Promise<Impor
     }
 
     if (!politicalOrganizationId) {
-      return { ok: false, error: "政治団体IDが指定されていません" };
+      return { ok: false, error: "自治体IDが指定されていません" };
     }
 
     const csvLoader = new DonorCsvLoader();

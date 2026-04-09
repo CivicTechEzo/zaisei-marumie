@@ -30,7 +30,7 @@ export default function CashFlowSection({
     <MainColumnCard id="cash-flow">
       <CardHeader
         icon={<Image src="/icons/icon-cashflow.svg" alt="Cash flow icon" width={30} height={31} />}
-        organizationName={organizationName || "未登録の政治団体"}
+        organizationName={organizationName || "未登録の自治体"}
         title="収支の流れ"
         updatedAt={updatedAt}
         subtitle="どこからお金を得て、何に使っているか"

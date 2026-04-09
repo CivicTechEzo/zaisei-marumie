@@ -28,10 +28,10 @@ export function PoliticalOrganizationSelect({
 
   return (
     <div className="space-y-2">
-      <Label>政治団体</Label>
+      <Label>自治体</Label>
       <Select value={value} onValueChange={onValueChange} required={required}>
         <SelectTrigger>
-          <SelectValue placeholder="政治団体を選択してください" />
+          <SelectValue placeholder="自治体を選択してください" />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (

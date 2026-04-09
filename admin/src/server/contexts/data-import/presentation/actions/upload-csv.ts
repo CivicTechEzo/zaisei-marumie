@@ -35,7 +35,7 @@ export async function uploadCsv(data: UploadCsvRequest): Promise<UploadCsvRespon
     }
 
     if (!politicalOrganizationId) {
-      throw new Error("政治団体IDが指定されていません");
+      throw new Error("自治体IDが指定されていません");
     }
 
     const result = await uploadUsecase.execute({

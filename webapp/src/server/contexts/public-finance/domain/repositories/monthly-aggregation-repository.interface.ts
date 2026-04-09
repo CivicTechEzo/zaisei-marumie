@@ -12,7 +12,7 @@ import type { MonthlyTransactionTotal } from "@/server/contexts/public-finance/d
 export interface IMonthlyAggregationRepository {
   /**
    * 指定された組織IDと会計年度の月別収入合計を取得する
-   * @param organizationIds 政治団体ID配列
+   * @param organizationIds 自治体ID配列
    * @param financialYear 会計年度
    * @returns 月別収入合計データの配列
    */
@@ -23,7 +23,7 @@ export interface IMonthlyAggregationRepository {
 
   /**
    * 指定された組織IDと会計年度の月別支出合計を取得する
-   * @param organizationIds 政治団体ID配列
+   * @param organizationIds 自治体ID配列
    * @param financialYear 会計年度
    * @returns 月別支出合計データの配列
    */

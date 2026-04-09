@@ -38,7 +38,7 @@ export default function Sidebar({
       title: "基本情報",
       items: [
         { href: "/user-info", label: "ユーザー情報" },
-        { href: "/political-organizations", label: "政治団体" },
+        { href: "/political-organizations", label: "自治体" },
         { href: "/users", label: "ユーザー管理", adminOnly: true },
       ],
     },

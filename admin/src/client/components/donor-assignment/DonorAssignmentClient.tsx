@@ -197,7 +197,7 @@ export function DonorAssignmentClient({
   if (organizations.length === 0) {
     return (
       <Card className="p-4">
-        <p className="text-white">政治団体が登録されていません。先に政治団体を作成してください。</p>
+        <p className="text-white">自治体が登録されていません。先に自治体を作成してください。</p>
       </Card>
     );
   }

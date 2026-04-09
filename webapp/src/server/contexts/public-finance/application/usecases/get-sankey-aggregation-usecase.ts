@@ -31,7 +31,7 @@ export class GetSankeyAggregationUsecase {
 
   async execute(params: GetSankeyAggregationParams): Promise<GetSankeyAggregationResult> {
     try {
-      // 1. 政治団体を取得
+      // 1. 自治体を取得
       const politicalOrganizations = await this.politicalOrganizationRepository.findBySlugs(
         params.slugs,
       );
