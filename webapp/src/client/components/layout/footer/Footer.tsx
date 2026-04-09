@@ -11,7 +11,7 @@ const getTextLinks = (currentSlug: string) => [
     href: `/o/${currentSlug}/#top`,
   },
   {
-    label: "収支の流れ",
+    label: "歳入・歳出の流れ",
     href: `/o/${currentSlug}/#cash-flow`,
   },
   {
@@ -31,20 +31,8 @@ const getTextLinks = (currentSlug: string) => [
     href: `/o/${currentSlug}/#explanation`,
   },
   {
-    label: "チームみらいについて",
+    label: "CivicTechEzo について",
     href: `/o/${currentSlug}/#about`,
-  },
-  {
-    label: "寄附で応援する",
-    href: "https://team-mir.ai/support/donation",
-  },
-  {
-    label: "チームみらい党員になる",
-    href: "https://team-mir.ai/support/membership",
-  },
-  {
-    label: "よくあるご質問",
-    href: "https://team-mirai.notion.site/FAQ-27ef6f56bae180c085e9f97d05a5d59c",
   },
   {
     label: "利用規約",
@@ -60,40 +48,27 @@ const getTextLinks = (currentSlug: string) => [
 const socialLinks = [
   {
     name: "webサイト",
-    href: "https://team-mir.ai/",
+    href: "https://fog-circle-b0e.notion.site/3327ecd908c88128b19df3cc4715d153",
     icon: "icon-web.svg",
-  },
-  {
-    name: "YouTube",
-    href: "https://www.youtube.com/@team_mirai_jp",
-    icon: "icon-yt.svg",
-  },
-  {
-    name: "LINE",
-    href: "https://line.me/R/ti/p/@465hhyop?oat__id=5529589",
-    icon: "icon-line.svg",
   },
   {
     name: "X",
     mainText: "X",
     subText: "（旧Twitter）",
-    href: "https://x.com/team_mirai_jp",
+    href: "https://x.com/CivicTechEzo",
     icon: "icon-x.svg",
   },
   {
-    name: "Instagram",
-    href: "https://www.instagram.com/team_mirai_jp/",
-    icon: "icon-insta.svg",
+    name: "YouTube",
+    href: "#",
+    icon: "icon-yt.svg",
+    disabled: true,
   },
   {
     name: "Facebook",
-    href: "https://www.facebook.com/teammirai.official",
+    href: "#",
     icon: "icon-fb.svg",
-  },
-  {
-    name: "TikTok",
-    href: "https://www.tiktok.com/@annotakahiro2024",
-    icon: "icon-tiktok.svg",
+    disabled: true,
   },
   {
     name: "GitHub",
@@ -128,10 +103,11 @@ export default function Footer() {
     <footer className="w-full bg-gradient-to-tl from-[#BCECD3] to-[#64D8C6] px-8 lg:px-[117px] py-12 lg:pt-12 lg:pb-9">
       <div className="max-w-[1278px] mx-auto flex flex-col items-center gap-9 lg:gap-10">
         {/* Logo - PC版のみ表示 */}
+        {/* TODO: CivicTechEzo ロゴアセット未作成。用意でき次第差し替え */}
         <div className="hidden lg:block w-[150px] h-[127px] relative">
           <Image
             src="/logos/team-mirai-logo.svg"
-            alt="Team Mirai Logo"
+            alt="CivicTechEzo"
             fill
             className="object-contain"
           />
@@ -163,8 +139,9 @@ export default function Footer() {
                 href={social.href}
                 target="_blank"
                 rel="noopener"
-                className="flex lg:flex-row items-center gap-1 lg:gap-1 hover:opacity-80 transition-opacity"
-                aria-label={social.name}
+                className={`flex lg:flex-row items-center gap-1 lg:gap-1 hover:opacity-80 transition-opacity ${social.disabled ? "opacity-40 pointer-events-none" : ""}`}
+                aria-label={social.disabled ? `${social.name}（準備中）` : social.name}
+                title={social.disabled ? "準備中" : undefined}
               >
                 <div className="w-12 h-12 lg:w-7 lg:h-7 rounded-full flex items-center justify-center relative bg-white">
                   <Image
@@ -188,10 +165,11 @@ export default function Footer() {
         </div>
 
         {/* Logo - SP版のみ表示 */}
+        {/* TODO: CivicTechEzo ロゴアセット未作成。用意でき次第差し替え */}
         <div className="block lg:hidden w-[150px] h-[127px] relative">
           <Image
             src="/logos/team-mirai-logo.svg"
-            alt="Team Mirai Logo"
+            alt="CivicTechEzo"
             fill
             className="object-contain"
           />
@@ -200,7 +178,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="w-full text-center">
           <p className="text-gray-600 text-sm leading-[1.25em]">
-            © 2025 Team Mirai All rights Reserved
+            © 2026 CivicTechEzo All rights Reserved
           </p>
         </div>
       </div>

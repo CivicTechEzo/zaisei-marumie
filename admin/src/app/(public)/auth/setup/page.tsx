@@ -32,7 +32,7 @@ export default async function SetupPage({ searchParams }: SetupPageProps) {
               アカウント設定
             </h2>
             <p className="mt-2 text-center text-sm text-muted-foreground">
-              「みらいまる見え政治資金」に招待されました。パスワードを設定して利用を開始してください。
+              「自治体財政まる見え」に招待されました。パスワードを設定して利用を開始してください。
             </p>
           </div>
           <SetupForm userEmail={user.email} setupPasswordAction={setupPassword} />

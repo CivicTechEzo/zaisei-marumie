@@ -30,7 +30,7 @@ export async function previewDonorCsv(
     }
 
     if (!politicalOrganizationId) {
-      throw new Error("政治団体IDが指定されていません");
+      throw new Error("自治体IDが指定されていません");
     }
 
     const csvBuffer = Buffer.from(await file.arrayBuffer());

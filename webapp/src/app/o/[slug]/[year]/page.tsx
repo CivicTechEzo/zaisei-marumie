@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import AboutSection from "@/client/components/common/AboutSection";
 import LinkCardsSection from "@/client/components/common/LinkCardsSection";
-import AnotherPageLinkSection from "@/client/components/common/AnotherPageLinkSection";
+
 import ExplanationSection from "@/client/components/common/ExplanationSection";
 import TransparencySection from "@/client/components/common/TransparencySection";
 import MainColumn from "@/client/components/layout/MainColumn";
@@ -35,8 +35,8 @@ export async function generateMetadata({ params }: OrgPageProps): Promise<Metada
   const currentOrganization = organizations.find((org) => org.slug === slug);
 
   const title = currentOrganization?.displayName
-    ? `${currentOrganization.displayName} - みらいまる見え政治資金`
-    : "みらいまる見え政治資金";
+    ? `${currentOrganization.displayName} - 自治体財政まる見え`
+    : "自治体財政まる見え";
 
   return {
     title,
@@ -94,7 +94,7 @@ export default async function OrgPage({ params }: OrgPageProps) {
         updatedAt={updatedAt}
         organizationName={currentOrganization?.displayName}
       />
-      <TransparencySection title="党首もこれを見て、お金をやりくりしています👀" />
+      <TransparencySection title="あなたのまちのお金の使いみち、見てみませんか？" />
       <BalanceSheetSection
         data={data?.balanceSheetData}
         updatedAt={updatedAt}
@@ -107,7 +107,7 @@ export default async function OrgPage({ params }: OrgPageProps) {
         year={financialYear}
         organizationName={currentOrganization?.displayName}
       />
-      <AnotherPageLinkSection currentSlug={slug} year={financialYear} />
+
       <ProgressSection />
       <ExplanationSection />
       <AboutSection />

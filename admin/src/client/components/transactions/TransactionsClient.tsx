@@ -153,7 +153,7 @@ export function TransactionsClient({ organizations }: TransactionsClientProps) {
                 <tr className="border-b border-border">
                   <th className="px-2 py-3 text-left text-sm font-semibold text-white">取引No</th>
                   <th className="px-2 py-3 text-left text-sm font-semibold text-white">取引日</th>
-                  <th className="px-2 py-3 text-left text-sm font-semibold text-white">政治団体</th>
+                  <th className="px-2 py-3 text-left text-sm font-semibold text-white">自治体</th>
                   <th className="px-2 py-3 text-left text-sm font-semibold text-white">
                     借方勘定科目
                   </th>

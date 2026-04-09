@@ -33,13 +33,13 @@ export async function updatePoliticalOrganization(
     console.error("Error updating political organization:", error);
 
     if (error instanceof Error && error.message.includes("Record to update not found")) {
-      throw new Error("政治団体が見つかりません");
+      throw new Error("自治体が見つかりません");
     }
 
     if (error instanceof Error && error.message.includes("Unique constraint")) {
       throw new Error("このスラッグは既に使用されています");
     }
 
-    throw new Error(error instanceof Error ? error.message : "政治団体の更新に失敗しました");
+    throw new Error(error instanceof Error ? error.message : "自治体の更新に失敗しました");
   }
 }

@@ -25,7 +25,7 @@ export default function MonthlyTrendsSection({
     <MainColumnCard id="monthly-trends">
       <CardHeader
         icon={<Image src="/icons/icon-barchart.svg" alt="Bar chart icon" width={30} height={30} />}
-        organizationName={organizationName || "未登録の政治団体"}
+        organizationName={organizationName || "未登録の自治体"}
         title="月ごとの収支の推移"
         updatedAt={updatedAt}
         subtitle="今年の月ごとの収入と支出"

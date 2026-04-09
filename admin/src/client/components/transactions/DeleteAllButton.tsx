@@ -19,7 +19,7 @@ export function DeleteAllButton({
 
   const handleDeleteAll = async () => {
     const message = organizationId
-      ? "選択された政治団体のトランザクションを削除してもよろしいですか？この操作は取り消せません。"
+      ? "選択された自治体のトランザクションを削除してもよろしいですか？この操作は取り消せません。"
       : "すべてのトランザクションを削除してもよろしいですか？この操作は取り消せません。";
 
     if (!window.confirm(message)) {
@@ -50,7 +50,7 @@ export function DeleteAllButton({
       onClick={handleDeleteAll}
       disabled={deleting || disabled}
     >
-      {deleting ? "削除中..." : organizationId ? "この政治団体の全取引を削除" : "全ての取引を削除"}
+      {deleting ? "削除中..." : organizationId ? "この自治体の全取引を削除" : "全ての取引を削除"}
     </Button>
   );
 }

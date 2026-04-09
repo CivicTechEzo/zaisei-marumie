@@ -16,7 +16,7 @@ export default function TermsPage() {
         <div>
           <SubSectionTitle>第1条（公開するデータの範囲）</SubSectionTitle>
           <Paragraph>
-            本サイトで公開するデータは、その正確性・完全性・即時性について保証するものではありません。最終的な収支は、別途公開される「政治資金収支報告書」をご確認ください。
+            本サイトで公開するデータは、その正確性・完全性・即時性について保証するものではありません。正式な財政情報は、各自治体が公開する決算書等の公式資料をご確認ください。
           </Paragraph>
         </div>
 
@@ -53,13 +53,6 @@ export default function TermsPage() {
           <SubSectionTitle>第5条（規約の変更）</SubSectionTitle>
           <Paragraph>
             当団体は必要に応じて本規約を変更することができ、変更後にユーザーが本サービスを利用した場合、当該変更に同意したものとみなします。
-          </Paragraph>
-        </div>
-
-        <div>
-          <SubSectionTitle>第6条（準拠法・管轄）</SubSectionTitle>
-          <Paragraph>
-            本規約は日本法に準拠し、本サービスに関連して生じる一切の紛争については、東京地方裁判所を第一審の専属的合意管轄裁判所とします。
           </Paragraph>
         </div>
       </div>

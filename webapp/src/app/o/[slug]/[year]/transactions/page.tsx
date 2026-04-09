@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
 import AboutSection from "@/client/components/common/AboutSection";
-import AnotherPageLinkSection from "@/client/components/common/AnotherPageLinkSection";
+
 import ExplanationSection from "@/client/components/common/ExplanationSection";
 import FloatingBackButton from "@/client/components/common/FloatingBackButton";
 import LinkCardsSection from "@/client/components/common/LinkCardsSection";
@@ -40,8 +40,8 @@ export async function generateMetadata({
   const organization = organizations.find((org) => org.slug === validSlug);
 
   return {
-    title: `${organization?.displayName || "Unknown"}:全ての出入金 - みらいまる見え政治資金`,
-    description: `${organization?.displayName || "Unknown"}の政治資金取引一覧を表示しています。`,
+    title: `${organization?.displayName || "Unknown"}:全ての出入金 - 自治体財政まる見え`,
+    description: `${organization?.displayName || "Unknown"}の財政データ一覧を表示しています。`,
   };
 }
 
@@ -121,7 +121,7 @@ export default async function TransactionsPage({ params, searchParams }: Transac
               icon={
                 <Image src="/icons/icon-cashback.svg" alt="Cash move icon" width={30} height={30} />
               }
-              organizationName={organization?.displayName || "未登録の政治団体"}
+              organizationName={organization?.displayName || "未登録の自治体"}
               title="すべての出入金"
               updatedAt={updatedAt}
               subtitle="これまでにデータ連携された出入金の明細"
@@ -139,8 +139,8 @@ export default async function TransactionsPage({ params, searchParams }: Transac
             />
           </MainColumnCard>
 
-          <TransparencySection title="党内の機密データの流出事故ではありません☺️" />
-          <AnotherPageLinkSection currentSlug={slug} year={financialYear} />
+          <TransparencySection title="あなたのまちのお金の使いみち、見てみませんか？" />
+
           <ProgressSection />
           <ExplanationSection />
           <AboutSection />

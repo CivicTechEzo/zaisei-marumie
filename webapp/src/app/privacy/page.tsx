@@ -43,7 +43,6 @@ export default function PrivacyPage() {
               "不正アクセスや規約違反など、利用者本人による違反が確認された場合",
               "第三者に対して不利益を与えると判断された場合",
               "公共の利益や利用者本人の利益のために必要と判断された場合",
-              "寄付金が年間5万円を超える場合、およびそれ以下の金額でも寄付金控除を申請する場合は、政治資金収支報告書に寄付者の情報が記載されます。また、寄附金控除を受ける場合は、総務省のウェブサイトにて寄付年月日・金額・住所・氏名・職業が公開されます。",
             ]}
           />
         </div>
@@ -71,7 +70,7 @@ export default function PrivacyPage() {
         <div>
           <SubSectionTitle>6. 個人情報の保管期間</SubSectionTitle>
           <Paragraph>
-            取得した個人情報は、政治資金規正法等の法令に基づき、必要な期間（原則として7年間）保管した後、適切な方法により廃棄・削除いたします。
+            取得した個人情報は、利用目的の達成に必要な期間保管した後、適切な方法により廃棄・削除いたします。
           </Paragraph>
         </div>
 
@@ -88,8 +87,8 @@ export default function PrivacyPage() {
             個人情報の確認・修正・削除・利用停止等をご希望される場合は、下記のお問い合わせ窓口までご連絡ください。なお、ご請求内容がご本人によるものであることが確認できた場合に限り、必要な調査を行い、その結果に基づき適切な対応を行います。
           </Paragraph>
           <Paragraph className="font-bold mt-4">お問い合わせ窓口</Paragraph>
-          <Paragraph>チームみらい 個人情報保護管理責任者</Paragraph>
-          <Paragraph>support@team-mir.ai</Paragraph>
+          <Paragraph>CivicTechEzo</Paragraph>
+          <Paragraph>civic.tech.ezo@gmail.com</Paragraph>
         </div>
       </div>
     </LegalPageLayout>

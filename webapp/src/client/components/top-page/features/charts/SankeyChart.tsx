@@ -315,10 +315,6 @@ const splitLabel = (label: string, maxCharsPerLine: number): string[] => {
     return ["昨年からの", "現金残高"];
   }
 
-  if (label === "安野貴博の政治団体からの寄附") {
-    return ["安野貴博の", "政治団体からの", "寄附"];
-  }
-
   // 特殊ケース：N+1文字（7文字）の場合は N-2, 3 に分割
   if (label.length === N + 1) {
     return [label.substring(0, N - 2), label.substring(N - 2)];
@@ -535,11 +531,11 @@ export default function SankeyChart({ data }: SankeyChartProps) {
       }}
       className="sankey-container !mb-0"
       role="img"
-      aria-label="政治資金の収支フロー図"
+      aria-label="歳入・歳出のフロー図"
       aria-describedby="sankey-chart-description"
     >
       <div id="sankey-chart-description" className="sr-only">
-        政治資金の収入から支出へのお金の流れを示すサンキーダイアグラムです。
+        歳入から歳出へのお金の流れを示すサンキーダイアグラムです。
       </div>
       <style jsx global>{`
         .sankey-container svg path:hover {

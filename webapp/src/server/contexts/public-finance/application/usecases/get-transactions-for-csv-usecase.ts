@@ -39,7 +39,7 @@ export class GetTransactionsForCsvUsecase {
         financial_year: params.financialYear,
       };
 
-      // JOINで政治団体名も含めて全件取得
+      // JOINで自治体名も含めて全件取得
       const transactions =
         await this.transactionRepository.findAllWithPoliticalOrganizationName(filters);
 
