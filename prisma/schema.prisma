@@ -57,6 +57,25 @@ model UserTenantMembership {
 }
 
 // ============================================================
+// 振興局（北海道の総合振興局・振興局）
+// ============================================================
+
+model Region {
+  id        BigInt @id @default(autoincrement())
+  code      String @unique @db.VarChar(20)
+  name      String @db.VarChar(50)
+  shortName String @map("short_name") @db.VarChar(20)
+  sortOrder Int    @default(0) @map("sort_order")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  municipalities Municipality[]
+
+  @@map("regions")
+}
+
+// ============================================================
 // 自治体（旧PoliticalOrganization → Municipality に改名）
 // ============================================================
 
@@ -69,6 +88,9 @@ model Municipality {
   municipalityType MunicipalityType @map("municipality_type")
   area             Float?
 
+  regionId BigInt @map("region_id")
+  region   Region @relation(fields: [regionId], references: [id])
+
   tenantId BigInt? @map("tenant_id")
   tenant   Tenant? @relation(fields: [tenantId], references: [id])
 
@@ -77,6 +99,7 @@ model Municipality {
 
   fiscalYearSettlements FiscalYearSettlement[]
 
+  @@index([regionId])
   @@index([tenantId])
   @@map("municipalities")
 }
