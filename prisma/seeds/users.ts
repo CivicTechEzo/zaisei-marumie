@@ -12,28 +12,23 @@ interface UserSeedData {
 
 const data: UserSeedData[] = [
   {
-    email: 'foo@example.com',
-    password: 'foo@example.com',
+    email: 'admin@example.com',
+    password: 'admin@example.com',
     role: 'admin',
-    tenantMemberships: [
-      { tenantSlug: 'sample-party', tenantRole: 'owner' },
-      { tenantSlug: 'e2e-test-org', tenantRole: 'owner' },
-    ],
+    tenantMemberships: [{ tenantSlug: 'dev-tenant', tenantRole: 'owner' }],
   },
   {
-    email: 'bar@example.com',
-    password: 'bar@example.com',
+    email: 'user@example.com',
+    password: 'user@example.com',
     role: 'user',
-    tenantMemberships: [
-      { tenantSlug: 'sample-party', tenantRole: 'editor' },
-    ],
+    tenantMemberships: [{ tenantSlug: 'dev-tenant', tenantRole: 'editor' }],
   },
 ];
 
 async function ensureSupabaseUser(
   supabase: SupabaseClient,
   userData: UserSeedData,
-  existingUsers: { id: string; email?: string }[]
+  existingUsers: { id: string; email?: string }[],
 ): Promise<string> {
   const existing = existingUsers.find((u) => u.email === userData.email);
   if (existing) {
@@ -55,11 +50,7 @@ async function ensureSupabaseUser(
   return newUser.user.id;
 }
 
-async function ensureDbUser(
-  prisma: PrismaClient,
-  authId: string,
-  userData: UserSeedData
-): Promise<void> {
+async function ensureDbUser(prisma: PrismaClient, authId: string, userData: UserSeedData): Promise<void> {
   let user = await prisma.user.findUnique({ where: { authId } });
   if (!user) {
     user = await prisma.user.create({
@@ -72,7 +63,6 @@ async function ensureDbUser(
     console.log(`✅ DB record created: ${userData.email}`);
   }
 
-  // Create tenant memberships
   for (const membership of userData.tenantMemberships) {
     const tenant = await prisma.tenant.findFirst({
       where: { slug: membership.tenantSlug },

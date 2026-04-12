@@ -3,14 +3,9 @@ import type { Seeder } from './lib/types';
 
 const data: Prisma.TenantCreateInput[] = [
   {
-    name: 'サンプル党',
-    slug: 'sample-party',
-    description: 'サンプルテナント',
-  },
-  {
-    name: 'E2Eテスト組織',
-    slug: 'e2e-test-org',
-    description: 'E2Eテスト用テナント',
+    name: '開発用テナント',
+    slug: 'dev-tenant',
+    description: '開発・動作確認用テナント',
   },
 ];
 
