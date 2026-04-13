@@ -22,11 +22,10 @@
 
 | アプリ | コンテキスト | 責務 |
 |--------|-------------|------|
-| webapp | **public-finance** | 政治資金データの公開・可視化 |
-| admin | **data-import** | MFクラウドCSVインポート、取引データプレビュー |
-| admin | **report** | 政治資金報告書XML生成、Counterpart（取引先）管理 |
+| webapp | **public-finance** | 自治体財政データの公開・可視化 |
+| admin | **data-import** | 財政データインポート（総務省Excel等）、決算データプレビュー |
 | admin | **auth** | 認証・認可、ユーザー管理 |
-| 共通 | **shared** | 全コンテキスト共通の基盤（Transaction, PoliticalOrganization等） |
+| 共通 | **shared** | コンテキスト横断で共有（prisma client、汎用リポジトリなど） |
 
 ### 2.2 コンテキスト間の依存ルール
 
@@ -34,11 +33,10 @@
 ✓ 許可される依存:
   - public-finance → shared（webapp）
   - data-import → shared（admin）
-  - report → shared（admin）
   - auth → shared（admin）
 
 ✗ 禁止される依存:
-  - コンテキスト間の直接依存（例: data-import → report）
+  - コンテキスト間の直接依存（例: data-import → auth）
   - shared → 任意のコンテキスト
   - webapp ↔ admin 間の依存
 ```
@@ -142,8 +140,8 @@ contexts/{コンテキスト名}/
 - **実装**: Constructor Injection でインターフェースに依存
 - **パターン**:
   - CRUD単一操作: パラメータ正規化 + リポジトリ呼び出し
-  - 複数ステップ: CSVロード → 変換 → バリデーション → 統計計算
-  - バリデーション＋永続化: 分類 → bulk操作 → キャッシュ無効化
+  - 複数ステップ: Excelデータ取得 → 変換 → バリデーション → プレビュー生成
+  - バリデーション＋永続化: ステータス判定 → bulk upsert → キャッシュ無効化
 - **エラー**: 詳細なエラーメッセージでラップして投げる
 
 #### Application Services（オプション）
@@ -157,15 +155,15 @@ contexts/{コンテキスト名}/
   - ✗ 単純なデータ取得（→ Usecase から直接 Repository 呼び出し）
 - **実装**: クラスベース、Constructor Injectionで依存を受け取る
 - **例**:
-  - `ExpenseAssembler`: 複数リポジトリから機械的にデータを組み立て
-  - `CounterpartSuggester`: 使用頻度・名前マッチングによるスコアリング（ドメイン知識ではなく技術的なアルゴリズム）
+  - 複数リポジトリから自治体情報と決算データを機械的に組み立てるAssembler
+  - 類似団体のスコアリング・推薦アルゴリズム（ドメイン知識ではなく技術的なアルゴリズム）
 
 ### 4.3 Domain層
 
 #### Models（ドメインモデル）
 - **責務**: 単一エンティティのビジネスルール、値の検証、ドメインロジック
 - **実装パターン**: `interface + const` パターン（型と値の宣言空間が異なるため同名で共存可能）
-- **例**: ハッシュ生成、会計年度計算、型変換、バリデーション
+- **例**: 年度コード↔西暦変換、貸借対照表の計算、ステータス判定、バリデーション
 
 ```typescript
 // 型定義
@@ -189,7 +187,7 @@ export const Password = {
 - **使用判断**:
   - ✓ 複数エンティティにまたがるロジック
   - ✓ 外部データとの照合・比較
-  - ✓ ビジネスルールの集約（報告書仕様など）
+  - ✓ ビジネスルールの集約（決算データの整合性検証など）
   - ✗ 単一エンティティのロジック（→ Domain Model へ）
 - **実装**: クラスまたは関数ベース
 - **禁止**: 直接的なModelアクセス、トランザクション管理、外部API呼び出し
@@ -233,15 +231,15 @@ export const Password = {
 
 | ロジック | 実装場所 | 理由 |
 |---|---|---|
-| トランザクションのハッシュ生成 | Domain Model | 単一エンティティ内のロジック |
-| 会計年度の計算 | Domain Model | 単一エンティティ内のロジック |
-| Counterpart名のバリデーション | Domain Model | 単一エンティティ内のロジック |
-| トランザクションの重複チェック | Domain Service | 既存データとの照合が必要 |
-| Counterpart必須判定ルール | Domain Service | 政治資金報告書仕様の集約 |
-| 寄付データの組み立て | Application Service | 複数リポジトリからデータ取得・組み立て |
-| Counterpart推薦アルゴリズム | Application Service | 複雑なスコアリング・Strategyパターン |
-| CSV → PreviewTransaction変換 | Infrastructure | 外部形式との連携 |
-| トランザクション一括保存 | Usecase | オーケストレーション |
+| 年度コード↔西暦変換（FiscalYearCode） | Domain Model | 単一エンティティ内のロジック |
+| 貸借対照表の純資産計算（BalanceSheet） | Domain Model | 単一エンティティ内のロジック |
+| 決算プレビューのステータス判定（SettlementPreview） | Domain Model | 単一エンティティ内のロジック |
+| 決算データの重複・整合性検証（SettlementValidator） | Domain Service | 既存データとの照合が必要 |
+| 歳入・歳出合計と内訳の整合性チェック | Domain Service | 複数フィールドにまたがる検証ルール |
+| 自治体情報と決算データの組み立て | Application Service | 複数リポジトリからデータ取得・組み立て |
+| 類似団体スコアリングアルゴリズム | Application Service | 複雑なスコアリング・Strategyパターン |
+| Excel → SettlementPreview変換 | Infrastructure | 外部形式との連携 |
+| 決算データ一括保存（SaveSettlementUsecase） | Usecase | オーケストレーション |
 
 ---
 
@@ -270,7 +268,7 @@ Domain層でエラーを扱う場合は、拡張エラー型とエラーコー�
 
 **配置場所**: `contexts/{コンテキスト名}/domain/types/`
 
-**リファレンス実装**: `contexts/report/domain/types/validation.ts`
+**リファレンス実装**: `contexts/data-import/domain/types/validation.ts`
 
 **原則**:
 - エラー型は `path`（エラー箇所）、`code`（エラーコード）、`message`（日本語メッセージ）、`severity`（"error" | "warning"）を持つ
@@ -352,7 +350,7 @@ pnpm depcruise
 | no-domain-to-infrastructure-impl | Domain → Infrastructure実装 禁止 |
 | no-infrastructure-to-application | Infrastructure → Application 禁止 |
 | no-infrastructure-to-presentation | Infrastructure → Presentation 禁止 |
-| Bounded Context間 | data-import ↔ report, auth ↔ 他コンテキスト 禁止 |
+| Bounded Context間 | data-import ↔ auth 禁止 |
 
 ### CI統合
 
@@ -372,7 +370,7 @@ A:
 - **Usecase**: リポジトリやサービスを組み合わせるオーケストレーション。1つのユースケースを実現。
 
 **Q: 複数のコンテキストで同じエンティティを使いたい場合は?**
-A: sharedコンテキストに配置する（例: Transaction, PoliticalOrganization）。
+A: sharedコンテキストに配置する（例: Municipality, FiscalYearSettlement）。
 
 **Q: loaders は必須か?**
 A: 必須。loaders/actionsがDI層（依存注入の組み立て層）としての役割を果たしている。UIコンポーネント（サーバーコンポーネント含む）から直接Usecaseやリポジトリを呼び出すことは禁止。必ずloaders/actionsを経由すること。
