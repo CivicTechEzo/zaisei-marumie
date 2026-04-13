@@ -16,8 +16,7 @@ import type { ISettlementRepository } from "@/server/contexts/data-import/domain
 import { mapExcelToSettlements } from "@/server/contexts/data-import/domain/services/excel-to-settlement-mapper";
 import type { ParsedExcelData } from "@/server/contexts/data-import/domain/services/excel-to-settlement-mapper";
 import { validateSettlementPreviews } from "@/server/contexts/data-import/domain/services/settlement-validator";
-import { scrapeExcelUrls } from "@/server/contexts/data-import/infrastructure/soumu/soumu-page-scraper";
-import { parseExcelFromUrl } from "@/server/contexts/data-import/infrastructure/soumu/soumu-excel-parser";
+import type { ISoumuDataFetcher } from "@/server/contexts/data-import/domain/services/soumu-data-fetcher.interface";
 
 export interface PreviewSettlementResult {
   fiscalYear: number;
@@ -27,22 +26,25 @@ export interface PreviewSettlementResult {
 }
 
 export class PreviewSettlementUsecase {
-  constructor(private readonly repository: ISettlementRepository) {}
+  constructor(
+    private readonly repository: ISettlementRepository,
+    private readonly dataFetcher: ISoumuDataFetcher,
+  ) {}
 
   async execute(yearCode: FiscalYearCodeString): Promise<PreviewSettlementResult> {
     const fiscalYear = fiscalYearCodeToYear(yearCode);
 
     // 1. 総務省ページからExcelファイルURLを取得
-    const urls = await scrapeExcelUrls(yearCode);
+    const urls = await this.dataFetcher.scrapeExcelUrls(yearCode);
 
     // 2. 5つのExcelファイルをダウンロード・パース（並列実行）
     const [surveyRows, revenueRows, expensePurposeRows, expenseNatureRows, localBondRows] =
       await Promise.all([
-        parseExcelFromUrl(urls.survey),
-        parseExcelFromUrl(urls.revenue),
-        parseExcelFromUrl(urls.expensePurpose),
-        parseExcelFromUrl(urls.expenseNature),
-        parseExcelFromUrl(urls.localBond),
+        this.dataFetcher.parseExcelFromUrl(urls.survey),
+        this.dataFetcher.parseExcelFromUrl(urls.revenue),
+        this.dataFetcher.parseExcelFromUrl(urls.expensePurpose),
+        this.dataFetcher.parseExcelFromUrl(urls.expenseNature),
+        this.dataFetcher.parseExcelFromUrl(urls.localBond),
       ]);
 
     const parsed: ParsedExcelData = {

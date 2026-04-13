@@ -4,16 +4,22 @@
  * import-settlement-data action
  *
  * プレビュー確認後、決算データをDBに保存するサーバーアクション。
- * プレビュー時と同じ年度コードを受け取り、再度Excelを取得して保存する。
+ * キャッシュされたプレビュー結果を使い、再度Excelをフェッチしない。
+ * キャッシュが期限切れの場合のみ再フェッチする。
  */
 
 import { revalidateTag } from "next/cache";
 import { prisma } from "@/server/contexts/shared/infrastructure/prisma";
 import { PrismaSettlementRepository } from "@/server/contexts/data-import/infrastructure/repositories/prisma-settlement.repository";
+import { SoumuDataFetcher } from "@/server/contexts/data-import/infrastructure/soumu/soumu-data-fetcher";
 import { WebappCacheInvalidator } from "@/server/contexts/shared/infrastructure/services/webapp-cache-invalidator";
 import { PreviewSettlementUsecase } from "@/server/contexts/data-import/application/usecases/preview-settlement-usecase";
 import { SaveSettlementUsecase } from "@/server/contexts/data-import/application/usecases/save-settlement-usecase";
 import { fetchSettlementPreviewSchema } from "@/server/contexts/data-import/presentation/schemas/import-settlement.schema";
+import {
+  getPreviewCache,
+  clearPreviewCache,
+} from "@/server/contexts/data-import/infrastructure/cache/settlement-preview-cache";
 import type { FiscalYearCodeString } from "@/server/contexts/data-import/domain/models/fiscal-year-code";
 
 export interface ImportSettlementResult {
@@ -24,11 +30,6 @@ export interface ImportSettlementResult {
   errors?: string[];
 }
 
-const repository = new PrismaSettlementRepository(prisma);
-const cacheInvalidator = new WebappCacheInvalidator();
-const previewUsecase = new PreviewSettlementUsecase(repository);
-const saveUsecase = new SaveSettlementUsecase(repository, cacheInvalidator);
-
 export async function importSettlementData(
   yearCode: string,
 ): Promise<ImportSettlementResult> {
@@ -36,14 +37,28 @@ export async function importSettlementData(
 
   try {
     const parsed = fetchSettlementPreviewSchema.parse({ yearCode });
+    const typedYearCode = parsed.yearCode as FiscalYearCodeString;
 
-    // 再度Excelを取得してプレビュー生成（最新データで保存するため）
-    const previewResult = await previewUsecase.execute(
-      parsed.yearCode as FiscalYearCodeString,
-    );
+    const repository = new PrismaSettlementRepository(prisma);
+    const cacheInvalidator = new WebappCacheInvalidator();
+    const saveUsecase = new SaveSettlementUsecase(repository, cacheInvalidator);
+
+    // キャッシュからプレビュー結果を取得（期限切れなら再フェッチ）
+    let previewResult = getPreviewCache(typedYearCode);
+    if (!previewResult) {
+      const dataFetcher = new SoumuDataFetcher();
+      const previewUsecase = new PreviewSettlementUsecase(
+        repository,
+        dataFetcher,
+      );
+      previewResult = await previewUsecase.execute(typedYearCode);
+    }
 
     // invalidを除外して保存
     const saveResult = await saveUsecase.execute(previewResult.previews);
+
+    // 使用済みキャッシュを削除
+    clearPreviewCache(typedYearCode);
 
     if (saveResult.errors.length > 0) {
       return {

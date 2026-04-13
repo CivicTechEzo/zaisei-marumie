@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/client/components/ui";
-import { FISCAL_YEAR_OPTIONS } from "@/server/contexts/data-import/domain/models/fiscal-year-code";
+import { FISCAL_YEAR_OPTIONS } from "@/server/contexts/data-import/presentation/types";
 import { fetchSettlementPreview } from "@/server/contexts/data-import/presentation/actions/fetch-settlement-preview";
 import type {
   FetchSettlementPreviewResult,
