@@ -45,6 +45,7 @@ export default function Sidebar({
     {
       title: "データ取り込み",
       items: [
+        { href: "/import-settlement", label: "財政データ取り込み" },
         { href: "/transactions", label: "取引一覧" },
         { href: "/bulk-delete-transactions", label: "取引一括削除" },
         { href: "/upload-csv", label: "CSVアップロード" },
