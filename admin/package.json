@@ -14,7 +14,8 @@
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui --ui-host=0.0.0.0",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "settlement:import": "npx tsx scripts/import-settlement.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.2",
@@ -41,17 +42,20 @@
     "react-dom": "19.2.3",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
+    "xlsx": "^0.18.5",
     "xmlbuilder2": "^4.0.3",
     "zod": "^4.3.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4.1.18",
+    "@types/cheerio": "^0.22.35",
     "@types/jest": "^30.0.0",
     "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "jest": "^30.2.0",
+    "cheerio": "^1.0.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "ts-jest": "^29.4.6",
