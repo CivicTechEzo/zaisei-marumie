@@ -1,13 +1,13 @@
 import type { MetadataRoute } from "next";
-import { loadOrganizations } from "@/server/contexts/public-finance/presentation/loaders/load-organizations";
+import { loadMunicipalities } from "@/server/contexts/public-finance/presentation/loaders/load-municipalities";
 
 export const dynamic = "force-static";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.WEBAPP_URL || "https://zaisei-marumie.example.com";
 
-  // 組織データを取得（0件の場合は空配列が返される）
-  const { organizations } = await loadOrganizations();
+  // 自治体データを取得（0件の場合は空配列が返される）
+  const { municipalities } = await loadMunicipalities();
 
   const sitemap: MetadataRoute.Sitemap = [
     {
@@ -17,20 +17,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 各組織のページを追加
-  organizations.forEach((org) => {
-    // 組織のメインページ
+  // 各自治体のページを追加
+  municipalities.forEach((m) => {
     sitemap.push({
-      url: `${baseUrl}/o/${org.slug}`,
+      url: `${baseUrl}/o/${m.slug}`,
       changeFrequency: "weekly",
       priority: 0.9,
-    });
-
-    // 組織のtransactionsページ
-    sitemap.push({
-      url: `${baseUrl}/o/${org.slug}/transactions`,
-      changeFrequency: "weekly",
-      priority: 0.8,
     });
   });
 

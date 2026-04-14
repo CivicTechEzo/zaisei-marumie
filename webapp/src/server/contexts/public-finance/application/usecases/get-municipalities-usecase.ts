@@ -1,36 +1,29 @@
 import "server-only";
 
 import type { IMunicipalityRepository } from "@/server/contexts/public-finance/domain/repositories/municipality-repository.interface";
-import type { OrganizationsResponse, OrganizationData } from "@/types/organization";
+import type { MunicipalitiesResponse, MunicipalityData } from "@/types/municipality";
 
 export class GetMunicipalitiesUsecase {
   constructor(private municipalityRepository: IMunicipalityRepository) {}
 
-  async execute(): Promise<OrganizationsResponse> {
-    try {
-      const municipalities = await this.municipalityRepository.findAll();
+  async execute(): Promise<MunicipalitiesResponse> {
+    const municipalities = await this.municipalityRepository.findAll();
 
-      if (municipalities.length === 0) {
-        return {
-          default: null,
-          organizations: [],
-        };
-      }
-
-      const organizationData: OrganizationData[] = municipalities.map((m) => ({
-        slug: m.slug,
-        orgName: m.displayName,
-        displayName: m.displayName,
-      }));
-
+    if (municipalities.length === 0) {
       return {
-        default: organizationData[0].slug,
-        organizations: organizationData,
+        default: null,
+        municipalities: [],
       };
-    } catch (error) {
-      throw new Error(
-        `Failed to get municipalities: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
     }
+
+    const municipalityData: MunicipalityData[] = municipalities.map((m) => ({
+      slug: m.slug,
+      displayName: m.displayName,
+    }));
+
+    return {
+      default: municipalityData[0].slug,
+      municipalities: municipalityData,
+    };
   }
 }

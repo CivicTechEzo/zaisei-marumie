@@ -8,8 +8,8 @@ import { GetSankeyAggregationUsecase } from "@/server/contexts/public-finance/ap
 import { CACHE_REVALIDATE_SECONDS } from "./constants";
 
 interface TopPageDataParams {
-  slugs: string[];
-  financialYear: number;
+  slug: string;
+  fiscalYear: number;
 }
 
 export const loadTopPageData = unstable_cache(
@@ -25,20 +25,21 @@ export const loadTopPageData = unstable_cache(
     // 目的別サンキーと性質別サンキーを並列実行
     const [purposeData, natureData] = await Promise.all([
       sankeyUsecase.execute({
-        slugs: params.slugs,
-        financialYear: params.financialYear,
-        categoryType: "purpose",
+        slug: params.slug,
+        fiscalYear: params.fiscalYear,
+        expenseMode: "purpose",
       }),
       sankeyUsecase.execute({
-        slugs: params.slugs,
-        financialYear: params.financialYear,
-        categoryType: "nature",
+        slug: params.slug,
+        fiscalYear: params.fiscalYear,
+        expenseMode: "nature",
       }),
     ]);
 
     return {
       purpose: purposeData.sankeyData,
       nature: natureData.sankeyData,
+      updatedAt: purposeData.updatedAt.toISOString(),
     };
   },
   ["top-page-data"],

@@ -3,27 +3,26 @@ import "client-only";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import type { OrganizationsResponse } from "@/types/organization";
+import type { MunicipalitiesResponse } from "@/types/municipality";
 
-const AVAILABLE_YEARS = [2025, 2026] as const;
-const DEFAULT_YEAR = 2026;
-
-interface OrganizationYearSheetProps {
-  organizations: OrganizationsResponse;
+interface MunicipalityYearSheetProps {
+  municipalities: MunicipalitiesResponse;
+  availableYears: number[];
   initialSlug?: string;
   initialYear?: number;
 }
 
-export default function OrganizationYearSheet({
-  organizations,
+export default function MunicipalityYearSheet({
+  municipalities,
+  availableYears,
   initialSlug,
   initialYear,
-}: OrganizationYearSheetProps) {
+}: MunicipalityYearSheetProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [currentSlug, setCurrentSlug] = useState(initialSlug || "");
-  const [currentYear, setCurrentYear] = useState(initialYear || DEFAULT_YEAR);
+  const [currentYear, setCurrentYear] = useState(initialYear || availableYears[0] || 2022);
 
   useEffect(() => {
     const pathSegments = pathname.split("/");
@@ -32,14 +31,14 @@ export default function OrganizationYearSheet({
       setCurrentSlug(pathSegments[2]);
       if (pathSegments[3]) {
         const yearFromPath = parseInt(pathSegments[3], 10);
-        if (AVAILABLE_YEARS.includes(yearFromPath as (typeof AVAILABLE_YEARS)[number])) {
+        if (!Number.isNaN(yearFromPath)) {
           setCurrentYear(yearFromPath);
         }
       }
     }
   }, [pathname]);
 
-  const currentOrganization = organizations.organizations.find((org) => org.slug === currentSlug);
+  const currentMunicipality = municipalities.municipalities.find((m) => m.slug === currentSlug);
 
   const handleSelect = (slug: string, year: number) => {
     const pathSegments = pathname.split("/");
@@ -57,7 +56,7 @@ export default function OrganizationYearSheet({
     router.push(newPath);
   };
 
-  const handleOrganizationSelect = (slug: string) => {
+  const handleMunicipalitySelect = (slug: string) => {
     handleSelect(slug, currentYear);
   };
 
@@ -79,9 +78,9 @@ export default function OrganizationYearSheet({
       >
         <span className="flex flex-col gap-1.5 items-start flex-1 min-w-0 leading-none">
           <span className="text-[14px] leading-none text-black truncate w-full text-left">
-            {currentOrganization?.displayName || "自治体を選択"}
+            {currentMunicipality?.displayName || "自治体を選択"}
           </span>
-          <span className="text-[9px] leading-none text-[#238778]">{currentYear}年</span>
+          <span className="text-[9px] leading-none text-[#238778]">{currentYear}年度</span>
         </span>
         <Image
           src="/icons/icon-chevron-down.svg"
@@ -105,19 +104,19 @@ export default function OrganizationYearSheet({
 
           {/* Dropdown Content */}
           <div className="absolute right-0 top-full mt-1 z-50 w-68 bg-white rounded-lg border border-black/50 shadow-lg py-3 max-h-[70vh] overflow-y-auto">
-            {/* Organization Selection */}
+            {/* Municipality Selection */}
             <div className="px-4 flex flex-col gap-1">
-              <p className="text-[11px] text-[#5a5a5a]">表示する団体名</p>
+              <p className="text-[11px] text-[#5a5a5a]">表示する自治体</p>
               <div className="flex flex-col">
-                {organizations.organizations.map((org) => (
+                {municipalities.municipalities.map((m) => (
                   <button
-                    key={org.slug}
+                    key={m.slug}
                     type="button"
-                    onClick={() => handleOrganizationSelect(org.slug)}
+                    onClick={() => handleMunicipalitySelect(m.slug)}
                     className="flex items-center gap-2 h-9 pl-6 text-left cursor-pointer rounded-md hover:bg-gray-100 transition-colors"
                   >
                     <span className="w-3 flex items-center justify-center">
-                      {currentSlug === org.slug && (
+                      {currentSlug === m.slug && (
                         <svg
                           width="13"
                           height="11"
@@ -137,12 +136,7 @@ export default function OrganizationYearSheet({
                         </svg>
                       )}
                     </span>
-                    <span className="flex flex-col gap-0.5">
-                      <span className="text-xs text-gray-900">{org.displayName}</span>
-                      {org.orgName && (
-                        <span className="text-[8px] text-[#6a6a6a]">{org.orgName}</span>
-                      )}
-                    </span>
+                    <span className="text-xs text-gray-900">{m.displayName}</span>
                   </button>
                 ))}
               </div>
@@ -153,9 +147,9 @@ export default function OrganizationYearSheet({
 
             {/* Year Selection */}
             <div className="px-4 py-1 flex flex-col gap-2">
-              <p className="text-[11px] text-[#5a5a5a]">対象年</p>
-              <div className="flex gap-3">
-                {AVAILABLE_YEARS.map((year) => (
+              <p className="text-[11px] text-[#5a5a5a]">対象年度</p>
+              <div className="flex gap-3 flex-wrap">
+                {availableYears.map((year) => (
                   <button
                     key={year}
                     type="button"
@@ -172,7 +166,7 @@ export default function OrganizationYearSheet({
                         : undefined
                     }
                   >
-                    {year}年
+                    {year}年度
                   </button>
                 ))}
               </div>

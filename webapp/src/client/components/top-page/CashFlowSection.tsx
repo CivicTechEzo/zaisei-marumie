@@ -12,13 +12,13 @@ import type { SankeyData } from "@/types/sankey";
 interface CashFlowSectionProps {
   purpose?: SankeyData | null;
   nature?: SankeyData | null;
-  organizationName?: string;
+  municipalityName?: string;
 }
 
 export default function CashFlowSection({
   purpose,
   nature,
-  organizationName,
+  municipalityName,
 }: CashFlowSectionProps) {
   const [activeTab, setActiveTab] = useState<"purpose" | "nature">("purpose");
 
@@ -28,7 +28,7 @@ export default function CashFlowSection({
     <MainColumnCard id="cash-flow">
       <CardHeader
         icon={<Image src="/icons/icon-cashflow.svg" alt="Cash flow icon" width={30} height={31} />}
-        organizationName={organizationName || "未登録の自治体"}
+        municipalityName={municipalityName || "未登録の自治体"}
         title="収支の流れ"
         subtitle="どこからお金を得て、何に使っているか"
       />

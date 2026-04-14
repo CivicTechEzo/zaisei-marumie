@@ -3,7 +3,7 @@ import { Subtitle, Title } from "@/client/components/ui/Typography";
 interface CardHeaderProps {
   icon: React.ReactNode;
   title: string;
-  organizationName?: string;
+  municipalityName?: string;
   updatedAt?: string;
   subtitle: string;
 }
@@ -11,7 +11,7 @@ interface CardHeaderProps {
 export default function CardHeader({
   icon,
   title,
-  organizationName,
+  municipalityName,
   updatedAt,
   subtitle,
 }: CardHeaderProps) {
@@ -26,9 +26,9 @@ export default function CardHeader({
             {icon}
           </div>
           <div className="flex flex-col md:block">
-            {organizationName ? (
+            {municipalityName ? (
               <Title className="text-[--color-text-primary]">
-                <span className="md:inline block">{organizationName}</span>
+                <span className="md:inline block">{municipalityName}</span>
                 <span className="hidden md:inline mx-1">｜</span>
                 <span className="md:inline block">{title}</span>
               </Title>

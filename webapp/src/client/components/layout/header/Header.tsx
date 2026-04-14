@@ -1,9 +1,13 @@
 import "server-only";
-import { loadOrganizations } from "@/server/contexts/public-finance/presentation/loaders/load-organizations";
+import { loadMunicipalities } from "@/server/contexts/public-finance/presentation/loaders/load-municipalities";
+import { loadAllAvailableYears } from "@/server/contexts/public-finance/presentation/loaders/load-available-years";
 import HeaderClient from "@/client/components/layout/header/HeaderClient";
 
 export default async function Header() {
-  const organizationsData = await loadOrganizations();
+  const [municipalitiesData, availableYears] = await Promise.all([
+    loadMunicipalities(),
+    loadAllAvailableYears(),
+  ]);
 
-  return <HeaderClient organizations={organizationsData} />;
+  return <HeaderClient municipalities={municipalitiesData} availableYears={availableYears} />;
 }

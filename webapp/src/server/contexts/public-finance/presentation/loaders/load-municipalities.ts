@@ -6,15 +6,15 @@ import { PrismaMunicipalityRepository } from "@/server/contexts/public-finance/i
 import { GetMunicipalitiesUsecase } from "@/server/contexts/public-finance/application/usecases/get-municipalities-usecase";
 import { CACHE_REVALIDATE_SECONDS } from "./constants";
 
-export const loadOrganizations = unstable_cache(
+export const loadMunicipalities = unstable_cache(
   async () => {
     const municipalityRepository = new PrismaMunicipalityRepository(prisma);
     const usecase = new GetMunicipalitiesUsecase(municipalityRepository);
     return await usecase.execute();
   },
-  ["organizations"],
+  ["municipalities"],
   {
     revalidate: CACHE_REVALIDATE_SECONDS,
-    tags: ["organizations"],
+    tags: ["municipalities"],
   },
 );

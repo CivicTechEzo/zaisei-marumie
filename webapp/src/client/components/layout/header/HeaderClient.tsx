@@ -3,10 +3,8 @@ import "client-only";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import OrganizationYearSheet from "@/client/components/layout/header/OrganizationYearSheet";
-import type { OrganizationsResponse } from "@/types/organization";
-
-const DEFAULT_YEAR = 2026;
+import MunicipalityYearSheet from "@/client/components/layout/header/MunicipalityYearSheet";
+import type { MunicipalitiesResponse } from "@/types/municipality";
 
 const getNavigationItems = (currentSlug: string, currentYear: number) => [
   { href: `/o/${currentSlug}/${currentYear}/`, label: "トップ", desktopLabel: null },
@@ -16,21 +14,6 @@ const getNavigationItems = (currentSlug: string, currentYear: number) => [
     desktopLabel: "歳入・歳出の流れ",
   },
   {
-    href: `/o/${currentSlug}/${currentYear}/#monthly-trends`,
-    label: "１年間の収支推移",
-    desktopLabel: "1年間の推移",
-  },
-  {
-    href: `/o/${currentSlug}/${currentYear}/#balance-sheet`,
-    label: "貸借対照表",
-    desktopLabel: "貸借対照表",
-  },
-  {
-    href: `/o/${currentSlug}/${currentYear}/#transactions`,
-    label: "すべての出入金",
-    desktopLabel: "すべての出入金",
-  },
-  {
     href: `/o/${currentSlug}/${currentYear}/#explanation`,
     label: "データについて",
     desktopLabel: "データについて",
@@ -38,10 +21,11 @@ const getNavigationItems = (currentSlug: string, currentYear: number) => [
 ];
 
 interface HeaderClientProps {
-  organizations: OrganizationsResponse;
+  municipalities: MunicipalitiesResponse;
+  availableYears: number[];
 }
 
-export default function HeaderClient({ organizations }: HeaderClientProps) {
+export default function HeaderClient({ municipalities, availableYears }: HeaderClientProps) {
   const pathname = usePathname();
 
   // 現在のslugとyearを取得（/o/[slug]/[year]/... の形式の場合）
@@ -50,9 +34,9 @@ export default function HeaderClient({ organizations }: HeaderClientProps) {
   const yearFromPath =
     pathSegments[1] === "o" && pathSegments[3] ? parseInt(pathSegments[3], 10) : null;
 
-  const currentSlug = slugFromPath ?? organizations.default;
-  const currentYear =
-    yearFromPath && [2025, 2026].includes(yearFromPath) ? yearFromPath : DEFAULT_YEAR;
+  const currentSlug = slugFromPath ?? municipalities.default;
+  const defaultYear = availableYears[0] || 2022;
+  const currentYear = yearFromPath && !Number.isNaN(yearFromPath) ? yearFromPath : defaultYear;
 
   const logoHref = currentSlug ? `/o/${currentSlug}/${currentYear}/` : "/";
   const navigationItems = currentSlug ? getNavigationItems(currentSlug, currentYear) : [];
@@ -105,7 +89,7 @@ export default function HeaderClient({ organizations }: HeaderClientProps) {
             </div>
           </Link>
 
-          {/* Navigation Menu + Organization Selector */}
+          {/* Navigation Menu + Municipality Selector */}
           <div className="flex items-center gap-8 flex-1 justify-end h-12 min-w-0">
             <nav
               className="hidden lg:flex items-center gap-6 flex-shrink-0"
@@ -131,8 +115,9 @@ export default function HeaderClient({ organizations }: HeaderClientProps) {
                 })}
             </nav>
             <div className="flex items-center w-full max-w-[217px] min-w-0 h-12 flex-shrink">
-              <OrganizationYearSheet
-                organizations={organizations}
+              <MunicipalityYearSheet
+                municipalities={municipalities}
+                availableYears={availableYears}
                 initialSlug={currentSlug ?? undefined}
                 initialYear={currentYear}
               />
