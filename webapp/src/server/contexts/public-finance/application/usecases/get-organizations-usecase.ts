@@ -1,31 +1,27 @@
 import "server-only";
 
-import type { IPoliticalOrganizationRepository } from "@/server/contexts/public-finance/domain/repositories/political-organization-repository.interface";
-import type { PoliticalOrganization } from "@/shared/models/political-organization";
+import type { IMunicipalityRepository } from "@/server/contexts/public-finance/domain/repositories/municipality-repository.interface";
 import type { OrganizationsResponse, OrganizationData } from "@/types/organization";
 
-export class GetOrganizationsUsecase {
-  constructor(private politicalOrganizationRepository: IPoliticalOrganizationRepository) {}
+export class GetMunicipalitiesUsecase {
+  constructor(private municipalityRepository: IMunicipalityRepository) {}
 
   async execute(): Promise<OrganizationsResponse> {
     try {
-      const organizations = await this.politicalOrganizationRepository.findAll();
+      const municipalities = await this.municipalityRepository.findAll();
 
-      // 0件の場合は空のレスポンスを返す（CIビルド時など）
-      if (organizations.length === 0) {
+      if (municipalities.length === 0) {
         return {
           default: null,
           organizations: [],
         };
       }
 
-      const organizationData: OrganizationData[] = organizations.map(
-        (org: PoliticalOrganization) => ({
-          slug: org.slug,
-          orgName: org.orgName,
-          displayName: org.displayName,
-        }),
-      );
+      const organizationData: OrganizationData[] = municipalities.map((m) => ({
+        slug: m.slug,
+        orgName: m.displayName,
+        displayName: m.displayName,
+      }));
 
       return {
         default: organizationData[0].slug,
@@ -33,7 +29,7 @@ export class GetOrganizationsUsecase {
       };
     } catch (error) {
       throw new Error(
-        `Failed to get organizations: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Failed to get municipalities: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
     }
   }

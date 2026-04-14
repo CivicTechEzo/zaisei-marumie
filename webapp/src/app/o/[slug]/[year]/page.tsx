@@ -7,19 +7,14 @@ import LinkCardsSection from "@/client/components/common/LinkCardsSection";
 import ExplanationSection from "@/client/components/common/ExplanationSection";
 import TransparencySection from "@/client/components/common/TransparencySection";
 import MainColumn from "@/client/components/layout/MainColumn";
-import BalanceSheetSection from "@/client/components/top-page/BalanceSheetSection";
 import CashFlowSection from "@/client/components/top-page/CashFlowSection";
-import MonthlyTrendsSection from "@/client/components/top-page/MonthlyTrendsSection";
 import ProgressSection from "@/client/components/top-page/ProgressSection";
-import TransactionsSection from "@/client/components/top-page/TransactionsSection";
 import { loadTopPageData } from "@/server/contexts/public-finance/presentation/loaders/load-top-page-data";
 import { loadOrganizations } from "@/server/contexts/public-finance/presentation/loaders/load-organizations";
-import { formatUpdatedAt } from "@/client/lib/format-date";
 
 export const revalidate = 300; // 5 minutes
 
-const VALID_YEARS = [2025, 2026] as const;
-const DEFAULT_YEAR = 2026;
+const DEFAULT_YEAR = 2022;
 
 interface OrgPageProps {
   params: Promise<{
@@ -48,14 +43,10 @@ export default async function OrgPage({ params }: OrgPageProps) {
 
   // 年度の妥当性をチェック
   const yearNumber = parseInt(yearParam, 10);
-  const financialYear = VALID_YEARS.includes(yearNumber as (typeof VALID_YEARS)[number])
-    ? yearNumber
-    : DEFAULT_YEAR;
-
-  // 年度が不正な場合はデフォルト年度にリダイレクト
-  if (financialYear !== yearNumber) {
+  if (isNaN(yearNumber) || yearNumber < 2000 || yearNumber > 2030) {
     redirect(`/o/${slug}/${DEFAULT_YEAR}`);
   }
+  const financialYear = yearNumber;
 
   // slugの妥当性をチェックし、必要に応じてリダイレクト
   const { default: defaultSlug, organizations } = await loadOrganizations();
@@ -68,45 +59,24 @@ export default async function OrgPage({ params }: OrgPageProps) {
   // 現在のslugに対応する組織を取得
   const currentOrganization = organizations.find((org) => org.slug === slug);
 
-  // 統合アクションで全データを取得
+  // サンキー図データを取得
   const data = await loadTopPageData({
     slugs,
-    page: 1,
-    perPage: 6, // 表示用に6件のみ取得
     financialYear,
   }).catch((error) => {
     console.error("loadTopPageData error:", error);
     return null;
   });
 
-  const updatedAt = formatUpdatedAt(data?.transactionData?.lastUpdatedAt ?? null);
-
   return (
     <MainColumn>
       <CashFlowSection
-        political={data?.political ?? null}
-        friendly={data?.friendly ?? null}
-        updatedAt={updatedAt}
-        organizationName={currentOrganization?.displayName}
-      />
-      <MonthlyTrendsSection
-        monthlyData={data?.monthlyData}
-        updatedAt={updatedAt}
+        purpose={data?.purpose ?? null}
+        nature={data?.nature ?? null}
+        updatedAt=""
         organizationName={currentOrganization?.displayName}
       />
       <TransparencySection title="あなたのまちのお金の使いみち、見てみませんか？" />
-      <BalanceSheetSection
-        data={data?.balanceSheetData}
-        updatedAt={updatedAt}
-        organizationName={currentOrganization?.displayName}
-      />
-      <TransactionsSection
-        transactionData={data?.transactionData ?? null}
-        updatedAt={updatedAt}
-        slug={slug}
-        year={financialYear}
-        organizationName={currentOrganization?.displayName}
-      />
 
       <ProgressSection />
       <ExplanationSection />

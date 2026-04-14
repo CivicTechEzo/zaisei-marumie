@@ -10,21 +10,21 @@ import FinancialSummarySection from "@/client/components/top-page/features/finan
 import type { SankeyData } from "@/types/sankey";
 
 interface CashFlowSectionProps {
-  political?: SankeyData | null;
-  friendly?: SankeyData | null;
+  purpose?: SankeyData | null;
+  nature?: SankeyData | null;
   updatedAt: string;
   organizationName?: string;
 }
 
 export default function CashFlowSection({
-  political,
-  friendly,
+  purpose,
+  nature,
   updatedAt,
   organizationName,
 }: CashFlowSectionProps) {
-  const [activeTab, setActiveTab] = useState<"political" | "friendly">("friendly");
+  const [activeTab, setActiveTab] = useState<"purpose" | "nature">("purpose");
 
-  const currentData = activeTab === "political" ? political : friendly;
+  const currentData = activeTab === "purpose" ? purpose : nature;
 
   return (
     <MainColumnCard id="cash-flow">
@@ -37,31 +37,31 @@ export default function CashFlowSection({
       />
 
       {/* 財務サマリー */}
-      <FinancialSummarySection sankeyData={friendly ?? null} />
+      <FinancialSummarySection sankeyData={purpose ?? null} />
 
       {/* タブ */}
       <div className="flex gap-7 border-b border-gray-300 mb-4">
         <button
           type="button"
-          onClick={() => setActiveTab("friendly")}
+          onClick={() => setActiveTab("purpose")}
           className={`pb-2 font-bold text-base border-b-2 transition-colors leading-tight cursor-pointer ${
-            activeTab === "friendly"
+            activeTab === "purpose"
               ? "border-[#238778] text-[#238778]"
               : "border-transparent text-[#9CA3AF] hover:text-gray-600"
           }`}
         >
-          詳細の区分
+          目的別
         </button>
         <button
           type="button"
-          onClick={() => setActiveTab("political")}
+          onClick={() => setActiveTab("nature")}
           className={`pb-2 font-bold text-base border-b-2 transition-colors leading-tight cursor-pointer ${
-            activeTab === "political"
+            activeTab === "nature"
               ? "border-[#238778] text-[#238778]"
               : "border-transparent text-[#9CA3AF] hover:text-gray-600"
           }`}
         >
-          法律上の区分
+          性質別
         </button>
       </div>
 

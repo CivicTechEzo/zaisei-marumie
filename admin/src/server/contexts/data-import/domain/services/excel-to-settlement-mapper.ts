@@ -293,13 +293,13 @@ function applyColumnMap(
     if (value === undefined) continue;
 
     if (STRING_FIELDS.has(field)) {
-      (data as Record<string, unknown>)[field] = String(value);
+      (data as unknown as Record<string, unknown>)[field] = String(value);
     } else if (DECIMAL_FIELDS.has(field)) {
-      (data as Record<string, unknown>)[field] = toDecimal(value);
+      (data as unknown as Record<string, unknown>)[field] = toDecimal(value);
     } else if (INT_FIELDS.has(field)) {
-      (data as Record<string, unknown>)[field] = toInt(value);
+      (data as unknown as Record<string, unknown>)[field] = toInt(value);
     } else {
-      (data as Record<string, unknown>)[field] = toBigInt(value);
+      (data as unknown as Record<string, unknown>)[field] = toBigInt(value);
     }
   }
 }

@@ -23,12 +23,13 @@ export interface CategoryAggregation {
 }
 
 /**
- * 残高情報
+ * 残高情報（自治体財政向け）
+ *
+ * - revCarryover: 繰越金（歳入の内訳に既に含まれるため adjustWithBalance では使用しない）
+ * - currentYearBalance: 歳入合計 - 歳出合計（当年度の収支差額）
  */
-interface BalanceInfo {
-  previousYearBalance: number;
+export interface BalanceInfo {
   currentYearBalance: number;
-  liabilityBalance: number;
 }
 
 /**
@@ -83,61 +84,29 @@ export const CategoryAggregation = {
   },
 
   /**
-   * 残高情報を収入・支出データに追加
+   * 収支差額を支出側に追加
    *
-   * - 昨年からの現金残高を収入側に追加
-   * - 今年の現金残高を支出側に追加（friendlyモードでは未払費用と収支に分離）
+   * 歳入合計 > 歳出合計の場合、差額を「翌年度繰越」として支出側に追加する。
+   * これによりサンキー図の左右バランスが取れる。
    */
   adjustWithBalance(
     data: CategoryAggregation,
     balance: BalanceInfo,
-    options: { isFriendlyCategory: boolean },
   ): CategoryAggregation {
-    const result = {
+    if (balance.currentYearBalance <= 0) {
+      return data;
+    }
+
+    return {
       income: [...data.income],
-      expense: [...data.expense],
+      expense: [
+        ...data.expense,
+        {
+          category: "翌年度繰越",
+          totalAmount: balance.currentYearBalance,
+        },
+      ],
     };
-
-    // 昨年からの現金残高の追加（収入側）
-    if (balance.previousYearBalance > 0) {
-      result.income.push({
-        category: "昨年からの現金残高",
-        totalAmount: balance.previousYearBalance,
-      });
-    }
-
-    // 今年の現金残高の追加（支出側、non-friendlyモード）
-    if (balance.currentYearBalance > 0 && !options.isFriendlyCategory) {
-      result.expense.push({
-        category: "現金残高",
-        totalAmount: balance.currentYearBalance,
-      });
-    }
-
-    // 今年の現金残高の追加（支出側、friendlyモード）
-    if (balance.currentYearBalance > 0 && options.isFriendlyCategory) {
-      const unpaidAmount = Math.max(balance.liabilityBalance, 0);
-      const actualCashBalance = Math.max(balance.currentYearBalance, 0);
-      const balanceAmount = Math.max(0, actualCashBalance - unpaidAmount);
-
-      if (unpaidAmount > 0) {
-        result.expense.push({
-          category: "現金残高",
-          subcategory: "未払費用",
-          totalAmount: unpaidAmount,
-        });
-      }
-
-      if (balanceAmount > 0) {
-        result.expense.push({
-          category: "現金残高",
-          subcategory: "収支",
-          totalAmount: balanceAmount,
-        });
-      }
-    }
-
-    return result;
   },
 };
 

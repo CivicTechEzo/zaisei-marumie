@@ -93,10 +93,6 @@ git show cef44c72:<ファイルパス>
 git show cef44c72:webapp/src/server/contexts/public-finance/infrastructure/repositories/prisma-transaction.repository.ts
 ```
 
-### git push 時の注意
-
-旧コードの型エラーにより pre-push フックの typecheck が失敗するため、当面は `git push --no-verify` でプッシュする。旧コードの書き換え・削除が完了し typecheck が通るようになったら、この記載を削除すること。
-
 ## バックエンドアーキテクチャガイド
 
 webapp / admin のバックエンド実装に関する詳細なルールは [docs/backend-architecture-guide.md](docs/backend-architecture-guide.md) を参照すること。

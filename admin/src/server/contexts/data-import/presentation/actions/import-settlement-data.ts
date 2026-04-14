@@ -71,7 +71,7 @@ export async function importSettlementData(
     }
 
     // キャッシュ無効化
-    revalidateTag("settlement-data");
+    revalidateTag("settlement-data", "max");
 
     return {
       ok: true,

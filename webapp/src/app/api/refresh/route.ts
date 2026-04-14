@@ -17,8 +17,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    revalidateTag("transactions-page-data", "max");
-    revalidateTag("transactions-for-csv", "max");
     revalidateTag("top-page-data", "max");
     revalidateTag("organizations", "max");
 
