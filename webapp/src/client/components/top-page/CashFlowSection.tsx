@@ -12,14 +12,12 @@ import type { SankeyData } from "@/types/sankey";
 interface CashFlowSectionProps {
   purpose?: SankeyData | null;
   nature?: SankeyData | null;
-  updatedAt: string;
   organizationName?: string;
 }
 
 export default function CashFlowSection({
   purpose,
   nature,
-  updatedAt,
   organizationName,
 }: CashFlowSectionProps) {
   const [activeTab, setActiveTab] = useState<"purpose" | "nature">("purpose");
@@ -32,7 +30,6 @@ export default function CashFlowSection({
         icon={<Image src="/icons/icon-cashflow.svg" alt="Cash flow icon" width={30} height={31} />}
         organizationName={organizationName || "未登録の自治体"}
         title="収支の流れ"
-        updatedAt={updatedAt}
         subtitle="どこからお金を得て、何に使っているか"
       />
 
@@ -72,11 +69,6 @@ export default function CashFlowSection({
         ) : (
           <div className="text-gray-500 mx-4">サンキー図データが取得できませんでした</div>
         )}
-      </div>
-
-      {/* 更新日時 */}
-      <div className="text-right md:hidden">
-        <span className="text-xs font-normal text-[#9CA3AF] leading-[1.33]">{updatedAt}</span>
       </div>
     </MainColumnCard>
   );

@@ -73,7 +73,6 @@ export default async function OrgPage({ params }: OrgPageProps) {
       <CashFlowSection
         purpose={data?.purpose ?? null}
         nature={data?.nature ?? null}
-        updatedAt=""
         organizationName={currentOrganization?.displayName}
       />
       <TransparencySection title="あなたのまちのお金の使いみち、見てみませんか？" />

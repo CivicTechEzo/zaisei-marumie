@@ -3,6 +3,10 @@ import "server-only";
 import type { SankeyData } from "@/server/contexts/public-finance/domain/models/sankey-data";
 import type { IMunicipalityRepository } from "@/server/contexts/public-finance/domain/repositories/municipality-repository.interface";
 import type { IFiscalSettlementRepository } from "@/server/contexts/public-finance/domain/repositories/fiscal-settlement-repository.interface";
+import type {
+  CategoryAggregation as CategoryAggregationType,
+  CategoryAggregationItem,
+} from "@/server/contexts/public-finance/domain/models/category-aggregation";
 import {
   CategoryAggregation,
 } from "@/server/contexts/public-finance/domain/models/category-aggregation";
@@ -96,12 +100,12 @@ export class GetSankeyAggregationUsecase {
  * 複数の CategoryAggregation を科目ごとに合算する
  */
 function mergeAggregations(
-  a: import("@/server/contexts/public-finance/domain/models/category-aggregation").CategoryAggregation,
-  b: import("@/server/contexts/public-finance/domain/models/category-aggregation").CategoryAggregation,
-): import("@/server/contexts/public-finance/domain/models/category-aggregation").CategoryAggregation {
+  a: CategoryAggregationType,
+  b: CategoryAggregationType,
+): CategoryAggregationType {
   const mergeItems = (
-    itemsA: import("@/server/contexts/public-finance/domain/models/category-aggregation").CategoryAggregationItem[],
-    itemsB: import("@/server/contexts/public-finance/domain/models/category-aggregation").CategoryAggregationItem[],
+    itemsA: CategoryAggregationItem[],
+    itemsB: CategoryAggregationItem[],
   ) => {
     const map = new Map<string, number>();
     for (const item of [...itemsA, ...itemsB]) {
