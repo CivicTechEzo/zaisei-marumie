@@ -42,6 +42,15 @@ export class PrismaFiscalSettlementRepository implements IFiscalSettlementReposi
     });
     return record?.fiscalYear ?? null;
   }
+
+  async getAllDistinctYears(): Promise<number[]> {
+    const records = await this.prisma.fiscalYearSettlement.findMany({
+      select: { fiscalYear: true },
+      distinct: ["fiscalYear"],
+      orderBy: { fiscalYear: "desc" },
+    });
+    return records.map((r) => r.fiscalYear);
+  }
 }
 
 /**
@@ -52,8 +61,8 @@ export class PrismaFiscalSettlementRepository implements IFiscalSettlementReposi
  */
 function toDomainModel(record: PrismaFiscalYearSettlement): FiscalYearSettlement {
   return {
-    id: Number(record.id),
-    municipalityId: Number(record.municipalityId),
+    id: record.id,
+    municipalityId: record.municipalityId,
     fiscalYear: record.fiscalYear,
 
     // 歳入

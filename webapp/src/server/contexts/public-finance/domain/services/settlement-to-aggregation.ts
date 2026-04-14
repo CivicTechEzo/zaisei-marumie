@@ -61,19 +61,21 @@ function categoriesToItems(
   categories: FiscalCategory[],
   settlement: FiscalYearSettlement,
 ): CategoryAggregationItem[] {
+  // FiscalCategory.fieldName は REVENUE_CATEGORIES 等で定義された
+  // FiscalYearSettlement の number フィールドのキー。
+  const fields = settlement as unknown as Record<string, number>;
   const items: CategoryAggregationItem[] = [];
 
   for (const cat of categories) {
-    const value = (settlement as unknown as Record<string, unknown>)[cat.fieldName];
-    const numValue = typeof value === "number" ? value : 0;
+    const value = fields[cat.fieldName] ?? 0;
 
     // 値が 0 の科目はスキップ（サンキー図のノイズ防止）
-    if (numValue === 0) continue;
+    if (value === 0) continue;
 
     // 千円 -> 円に変換
     items.push({
       category: cat.shortLabel,
-      totalAmount: numValue * 1000,
+      totalAmount: value * 1000,
     });
   }
 

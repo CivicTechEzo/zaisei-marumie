@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import OrganizationYearSheet from "@/client/components/layout/header/OrganizationYearSheet";
-import type { MunicipalitiesResponse } from "@/types/organization";
+import type { MunicipalitiesResponse } from "@/types/municipality";
 
 const getNavigationItems = (currentSlug: string, currentYear: number) => [
   { href: `/o/${currentSlug}/${currentYear}/`, label: "トップ", desktopLabel: null },

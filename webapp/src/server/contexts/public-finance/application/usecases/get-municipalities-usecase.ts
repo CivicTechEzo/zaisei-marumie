@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { IMunicipalityRepository } from "@/server/contexts/public-finance/domain/repositories/municipality-repository.interface";
-import type { MunicipalitiesResponse, MunicipalityData } from "@/types/organization";
+import type { MunicipalitiesResponse, MunicipalityData } from "@/types/municipality";
 
 export class GetMunicipalitiesUsecase {
   constructor(private municipalityRepository: IMunicipalityRepository) {}

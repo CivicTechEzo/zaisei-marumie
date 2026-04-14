@@ -44,7 +44,7 @@ export class GetSankeyAggregationUsecase {
       params.fiscalYear,
     );
     if (!settlement) {
-      throw new SettlementNotFoundError(Number(municipality.id), params.fiscalYear);
+      throw new SettlementNotFoundError(municipality.id, params.fiscalYear);
     }
 
     // 3. FiscalYearSettlement → CategoryAggregation 変換（千円→円変換含む）

@@ -40,12 +40,8 @@ export const loadAvailableYears = unstable_cache(
  */
 export const loadAllAvailableYears = unstable_cache(
   async (): Promise<number[]> => {
-    const records = await prisma.fiscalYearSettlement.findMany({
-      select: { fiscalYear: true },
-      distinct: ["fiscalYear"],
-      orderBy: { fiscalYear: "desc" },
-    });
-    return records.map((r) => r.fiscalYear);
+    const fiscalSettlementRepository = new PrismaFiscalSettlementRepository(prisma);
+    return fiscalSettlementRepository.getAllDistinctYears();
   },
   ["all-available-years"],
   { revalidate: CACHE_REVALIDATE_SECONDS, tags: ["all-available-years"] },

@@ -14,7 +14,7 @@ export class MunicipalityNotFoundError extends Error {
 export class SettlementNotFoundError extends Error {
   readonly code = "SETTLEMENT_NOT_FOUND" as const;
 
-  constructor(municipalityId: number, fiscalYear: number) {
+  constructor(municipalityId: bigint, fiscalYear: number) {
     super(
       `指定された年度の決算データがありません: municipalityId=${municipalityId}, fiscalYear=${fiscalYear}`,
     );

@@ -7,8 +7,8 @@
  * - 金額は千円単位のまま保持（円単位への変換は集計サービスで行う）
  */
 export interface FiscalYearSettlement {
-  id: number;
-  municipalityId: number;
+  id: bigint;
+  municipalityId: bigint;
   fiscalYear: number;
 
   // ----------------------------------------------------------

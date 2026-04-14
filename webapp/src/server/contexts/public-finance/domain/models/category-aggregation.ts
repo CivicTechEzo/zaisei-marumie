@@ -54,7 +54,7 @@ export const CategoryAggregation = {
   /**
    * 小規模項目を「その他（カテゴリ名）」に統合
    *
-   * friendly-categoryモードでサブカテゴリが多すぎる場合に適用し、
+   * サブカテゴリが多すぎる場合に閾値以下の項目をまとめて、
    * グラフの可読性を向上させる
    */
   consolidateSmallItems(

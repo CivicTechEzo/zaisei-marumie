@@ -3,7 +3,7 @@ import "client-only";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import type { MunicipalitiesResponse } from "@/types/organization";
+import type { MunicipalitiesResponse } from "@/types/municipality";
 
 interface OrganizationYearSheetProps {
   organizations: MunicipalitiesResponse;
