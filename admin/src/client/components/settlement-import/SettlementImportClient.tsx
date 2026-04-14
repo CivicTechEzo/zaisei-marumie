@@ -79,8 +79,7 @@ export default function SettlementImportClient({ importedYears }: Props) {
     setErrorMessage(null);
 
     try {
-      const result: FetchSettlementPreviewResult =
-        await fetchSettlementPreview(selectedYear);
+      const result: FetchSettlementPreviewResult = await fetchSettlementPreview(selectedYear);
 
       if (!result.ok) {
         setErrorMessage(result.error ?? "データの取得に失敗しました");
@@ -92,9 +91,7 @@ export default function SettlementImportClient({ importedYears }: Props) {
       setFiscalYear(result.fiscalYear ?? null);
       setStep("preview");
     } catch (err) {
-      setErrorMessage(
-        err instanceof Error ? err.message : "データの取得に失敗しました",
-      );
+      setErrorMessage(err instanceof Error ? err.message : "データの取得に失敗しました");
     } finally {
       setLoading(false);
     }
@@ -110,9 +107,7 @@ export default function SettlementImportClient({ importedYears }: Props) {
       setImportResult(result);
       setStep("result");
     } catch (err) {
-      setErrorMessage(
-        err instanceof Error ? err.message : "インポートに失敗しました",
-      );
+      setErrorMessage(err instanceof Error ? err.message : "インポートに失敗しました");
     } finally {
       setImporting(false);
     }
@@ -128,10 +123,8 @@ export default function SettlementImportClient({ importedYears }: Props) {
     setImportResult(null);
   };
 
-  const hasErrors = summary ? summary.invalidCount > 0 : false;
-  const hasImportable = summary
-    ? summary.insertCount + summary.updateCount > 0
-    : false;
+  const _hasErrors = summary ? summary.invalidCount > 0 : false;
+  const hasImportable = summary ? summary.insertCount + summary.updateCount > 0 : false;
 
   return (
     <div className="space-y-6">
@@ -164,9 +157,7 @@ export default function SettlementImportClient({ importedYears }: Props) {
             </div>
 
             {errorMessage && (
-              <div className="rounded-md bg-red-50 p-4 text-red-800 text-sm">
-                {errorMessage}
-              </div>
+              <div className="rounded-md bg-red-50 p-4 text-red-800 text-sm">{errorMessage}</div>
             )}
           </CardContent>
         </Card>
@@ -174,142 +165,127 @@ export default function SettlementImportClient({ importedYears }: Props) {
 
       {/* Step 2: プレビュー */}
       {step === "preview" && summary && (
-        <>
-          <Card>
-            <CardHeader>
-              <CardTitle>{fiscalYear}年度 決算データプレビュー</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {/* サマリー */}
-              <div className="grid grid-cols-5 gap-4 mb-6">
-                <div className="rounded-md bg-gray-50 p-3 text-center">
-                  <div className="text-2xl font-bold">{summary.total}</div>
-                  <div className="text-xs text-muted-foreground">総件数</div>
-                </div>
-                <div className="rounded-md bg-green-50 p-3 text-center">
-                  <div className="text-2xl font-bold text-green-700">
-                    {summary.insertCount}
-                  </div>
-                  <div className="text-xs text-muted-foreground">新規</div>
-                </div>
-                <div className="rounded-md bg-blue-50 p-3 text-center">
-                  <div className="text-2xl font-bold text-blue-700">
-                    {summary.updateCount}
-                  </div>
-                  <div className="text-xs text-muted-foreground">更新</div>
-                </div>
-                <div className="rounded-md bg-gray-50 p-3 text-center">
-                  <div className="text-2xl font-bold text-gray-500">
-                    {summary.skipCount}
-                  </div>
-                  <div className="text-xs text-muted-foreground">スキップ</div>
-                </div>
-                <div className="rounded-md bg-red-50 p-3 text-center">
-                  <div className="text-2xl font-bold text-red-700">
-                    {summary.invalidCount}
-                  </div>
-                  <div className="text-xs text-muted-foreground">エラー</div>
-                </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>{fiscalYear}年度 決算データプレビュー</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* サマリー */}
+            <div className="grid grid-cols-5 gap-4 mb-6">
+              <div className="rounded-md bg-gray-50 p-3 text-center">
+                <div className="text-2xl font-bold">{summary.total}</div>
+                <div className="text-xs text-muted-foreground">総件数</div>
               </div>
+              <div className="rounded-md bg-green-50 p-3 text-center">
+                <div className="text-2xl font-bold text-green-700">{summary.insertCount}</div>
+                <div className="text-xs text-muted-foreground">新規</div>
+              </div>
+              <div className="rounded-md bg-blue-50 p-3 text-center">
+                <div className="text-2xl font-bold text-blue-700">{summary.updateCount}</div>
+                <div className="text-xs text-muted-foreground">更新</div>
+              </div>
+              <div className="rounded-md bg-gray-50 p-3 text-center">
+                <div className="text-2xl font-bold text-gray-500">{summary.skipCount}</div>
+                <div className="text-xs text-muted-foreground">スキップ</div>
+              </div>
+              <div className="rounded-md bg-red-50 p-3 text-center">
+                <div className="text-2xl font-bold text-red-700">{summary.invalidCount}</div>
+                <div className="text-xs text-muted-foreground">エラー</div>
+              </div>
+            </div>
 
-              {/* エラー一覧 */}
-              {summary.errors.length > 0 && (
-                <div className="mb-4 rounded-md bg-red-50 p-4">
-                  <h4 className="font-medium text-red-800 mb-2">
-                    エラー ({summary.errors.length}件)
-                  </h4>
-                  <ul className="list-disc list-inside text-sm text-red-700 space-y-1">
-                    {summary.errors.map((err, i) => (
-                      <li key={`err-${i}-${err.path}`}>
-                        [{err.path}] {err.message}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+            {/* エラー一覧 */}
+            {summary.errors.length > 0 && (
+              <div className="mb-4 rounded-md bg-red-50 p-4">
+                <h4 className="font-medium text-red-800 mb-2">
+                  エラー ({summary.errors.length}件)
+                </h4>
+                <ul className="list-disc list-inside text-sm text-red-700 space-y-1">
+                  {summary.errors.map((err, i) => (
+                    <li key={`err-${i}-${err.path}`}>
+                      [{err.path}] {err.message}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-              {/* 警告一覧 */}
-              {summary.warnings.length > 0 && (
-                <div className="mb-4 rounded-md bg-yellow-50 p-4">
-                  <h4 className="font-medium text-yellow-800 mb-2">
-                    警告 ({summary.warnings.length}件)
-                  </h4>
-                  <ul className="list-disc list-inside text-sm text-yellow-700 space-y-1 max-h-40 overflow-y-auto">
-                    {summary.warnings.map((w, i) => (
-                      <li key={`warn-${i}-${w.path}`}>
-                        [{w.path}] {w.message}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+            {/* 警告一覧 */}
+            {summary.warnings.length > 0 && (
+              <div className="mb-4 rounded-md bg-yellow-50 p-4">
+                <h4 className="font-medium text-yellow-800 mb-2">
+                  警告 ({summary.warnings.length}件)
+                </h4>
+                <ul className="list-disc list-inside text-sm text-yellow-700 space-y-1 max-h-40 overflow-y-auto">
+                  {summary.warnings.map((w, i) => (
+                    <li key={`warn-${i}-${w.path}`}>
+                      [{w.path}] {w.message}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-              {/* データテーブル */}
-              <div className="rounded-md border overflow-auto max-h-96">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="sticky top-0 bg-background">ステータス</TableHead>
-                      <TableHead className="sticky top-0 bg-background">団体コード</TableHead>
-                      <TableHead className="sticky top-0 bg-background">自治体名</TableHead>
-                      <TableHead className="sticky top-0 bg-background text-right">
-                        歳入合計 (千円)
-                      </TableHead>
-                      <TableHead className="sticky top-0 bg-background text-right">
-                        歳出合計 (千円)
-                      </TableHead>
-                      <TableHead className="sticky top-0 bg-background text-right">人口</TableHead>
+            {/* データテーブル */}
+            <div className="rounded-md border overflow-auto max-h-96">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="sticky top-0 bg-background">ステータス</TableHead>
+                    <TableHead className="sticky top-0 bg-background">団体コード</TableHead>
+                    <TableHead className="sticky top-0 bg-background">自治体名</TableHead>
+                    <TableHead className="sticky top-0 bg-background text-right">
+                      歳入合計 (千円)
+                    </TableHead>
+                    <TableHead className="sticky top-0 bg-background text-right">
+                      歳出合計 (千円)
+                    </TableHead>
+                    <TableHead className="sticky top-0 bg-background text-right">人口</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {previews.map((p) => (
+                    <TableRow
+                      key={p.municipalityCode}
+                      className={
+                        p.status === "invalid"
+                          ? "bg-red-50"
+                          : p.warnings.length > 0
+                            ? "bg-yellow-50"
+                            : ""
+                      }
+                    >
+                      <TableCell>{statusBadge(p.status)}</TableCell>
+                      <TableCell className="font-mono text-sm">{p.municipalityCode}</TableCell>
+                      <TableCell>{p.municipalityName}</TableCell>
+                      <TableCell className="text-right font-mono">
+                        {formatAmount(p.revTotal)}
+                      </TableCell>
+                      <TableCell className="text-right font-mono">
+                        {formatAmount(p.expPurposeTotal)}
+                      </TableCell>
+                      <TableCell className="text-right font-mono">
+                        {p.population.toLocaleString()}
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {previews.map((p) => (
-                      <TableRow
-                        key={p.municipalityCode}
-                        className={
-                          p.status === "invalid"
-                            ? "bg-red-50"
-                            : p.warnings.length > 0
-                              ? "bg-yellow-50"
-                              : ""
-                        }
-                      >
-                        <TableCell>{statusBadge(p.status)}</TableCell>
-                        <TableCell className="font-mono text-sm">
-                          {p.municipalityCode}
-                        </TableCell>
-                        <TableCell>{p.municipalityName}</TableCell>
-                        <TableCell className="text-right font-mono">
-                          {formatAmount(p.revTotal)}
-                        </TableCell>
-                        <TableCell className="text-right font-mono">
-                          {formatAmount(p.expPurposeTotal)}
-                        </TableCell>
-                        <TableCell className="text-right font-mono">
-                          {p.population.toLocaleString()}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
 
-              {/* アクションボタン */}
-              <div className="flex gap-4 mt-6">
-                <Button variant="outline" onClick={handleReset}>
-                  戻る
-                </Button>
-                <Button
-                  onClick={handleImport}
-                  disabled={!hasImportable || importing}
-                >
-                  {importing
-                    ? "インポート中..."
-                    : `インポート実行 (${summary.insertCount + summary.updateCount}件)`}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </>
+            {/* アクションボタン */}
+            <div className="flex gap-4 mt-6">
+              <Button variant="outline" onClick={handleReset}>
+                戻る
+              </Button>
+              <Button onClick={handleImport} disabled={!hasImportable || importing}>
+                {importing
+                  ? "インポート中..."
+                  : `インポート実行 (${summary.insertCount + summary.updateCount}件)`}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Step 3: 結果 */}
@@ -325,8 +301,8 @@ export default function SettlementImportClient({ importedYears }: Props) {
               <p className="font-medium">{importResult.message}</p>
               {importResult.errors && importResult.errors.length > 0 && (
                 <ul className="mt-2 list-disc list-inside text-sm">
-                  {importResult.errors.map((err, i) => (
-                    <li key={`result-err-${i}`}>{err}</li>
+                  {importResult.errors.map((err) => (
+                    <li key={err}>{err}</li>
                   ))}
                 </ul>
               )}
@@ -348,9 +324,7 @@ export default function SettlementImportClient({ importedYears }: Props) {
 
       {/* エラーメッセージ（プレビュー/結果画面で表示） */}
       {step !== "select" && errorMessage && (
-        <div className="rounded-md bg-red-50 p-4 text-red-800 text-sm">
-          {errorMessage}
-        </div>
+        <div className="rounded-md bg-red-50 p-4 text-red-800 text-sm">{errorMessage}</div>
       )}
     </div>
   );

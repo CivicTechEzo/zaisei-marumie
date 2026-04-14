@@ -23,9 +23,7 @@ export interface MunicipalityLookup {
 }
 
 export interface ISettlementRepository {
-  findExistingByFiscalYear(
-    fiscalYear: number,
-  ): Promise<ExistingSettlement[]>;
+  findExistingByFiscalYear(fiscalYear: number): Promise<ExistingSettlement[]>;
 
   findImportedFiscalYears(): Promise<number[]>;
 

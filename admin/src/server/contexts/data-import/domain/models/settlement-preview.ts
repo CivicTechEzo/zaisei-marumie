@@ -101,6 +101,16 @@ export interface SettlementPreview {
   warnings: ValidationError[];
 }
 
+/**
+ * プレビュー結果（Usecase/Infrastructure 間で共有される型）
+ */
+export interface PreviewSettlementResult {
+  fiscalYear: number;
+  yearCode: string;
+  previews: SettlementPreview[];
+  summary: SettlementPreviewSummary;
+}
+
 export interface SettlementPreviewSummary {
   total: number;
   insertCount: number;
@@ -111,9 +121,7 @@ export interface SettlementPreviewSummary {
   warnings: ValidationError[];
 }
 
-export function computePreviewSummary(
-  previews: SettlementPreview[],
-): SettlementPreviewSummary {
+export function computePreviewSummary(previews: SettlementPreview[]): SettlementPreviewSummary {
   const allErrors: ValidationError[] = [];
   const allWarnings: ValidationError[] = [];
 

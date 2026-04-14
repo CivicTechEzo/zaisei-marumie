@@ -14,9 +14,7 @@ import { scrapeExcelUrls } from "@/server/contexts/data-import/infrastructure/so
 import { parseExcelFromUrl } from "@/server/contexts/data-import/infrastructure/soumu/soumu-excel-parser";
 
 export class SoumuDataFetcher implements ISoumuDataFetcher {
-  async scrapeExcelUrls(
-    yearCode: FiscalYearCodeString,
-  ): Promise<ExcelFileUrls> {
+  async scrapeExcelUrls(yearCode: FiscalYearCodeString): Promise<ExcelFileUrls> {
     return scrapeExcelUrls(yearCode);
   }
 

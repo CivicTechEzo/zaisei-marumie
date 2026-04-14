@@ -47,7 +47,7 @@ const REVENUE_COLUMN_MAP: Record<string, keyof SettlementPreviewData> = {
   "地方交付税　普通": "revLocalAllocationOrdinary",
   "地方交付税　特別": "revLocalAllocationSpecial",
   交通安全対策特別交付金: "revTrafficSafetyTax",
-  "分担金及び負担金": "revSharedBurden",
+  分担金及び負担金: "revSharedBurden",
   使用料: "revUsageFees",
   手数料: "revServiceFees",
   国庫支出金: "revNationalSubsidy",
@@ -62,40 +62,39 @@ const REVENUE_COLUMN_MAP: Record<string, keyof SettlementPreviewData> = {
 };
 
 /** 目的別歳出マッピング */
-const EXPENSE_PURPOSE_COLUMN_MAP: Record<string, keyof SettlementPreviewData> =
-  {
-    議会費: "expAssembly",
-    総務費: "expGeneralAdmin",
-    民生費: "expWelfare",
-    衛生費: "expHealth",
-    労働費: "expLabor",
-    農林水産業費: "expAgriculture",
-    商工費: "expCommerce",
-    土木費: "expCivilEngineering",
-    消防費: "expFirefighting",
-    教育費: "expEducation",
-    災害復旧費: "expDisasterRecovery",
-    公債費: "expDebtService",
-    歳出合計: "expPurposeTotal",
-  };
+const EXPENSE_PURPOSE_COLUMN_MAP: Record<string, keyof SettlementPreviewData> = {
+  議会費: "expAssembly",
+  総務費: "expGeneralAdmin",
+  民生費: "expWelfare",
+  衛生費: "expHealth",
+  労働費: "expLabor",
+  農林水産業費: "expAgriculture",
+  商工費: "expCommerce",
+  土木費: "expCivilEngineering",
+  消防費: "expFirefighting",
+  教育費: "expEducation",
+  災害復旧費: "expDisasterRecovery",
+  公債費: "expDebtService",
+  歳出合計: "expPurposeTotal",
+};
 
 /** 性質別歳出マッピング */
 const EXPENSE_NATURE_COLUMN_MAP: Record<string, keyof SettlementPreviewData> = {
   人件費: "expPersonnel",
-  "うち職員給": "expPersonnelSalary",
+  うち職員給: "expPersonnelSalary",
   扶助費: "expAssistance",
-  "公債費_性質別": "expDebtServiceNature",
+  公債費_性質別: "expDebtServiceNature",
   義務的経費計: "expMandatoryTotal",
   物件費: "expMaterials",
   維持補修費: "expMaintenance",
   補助費等: "expSubsidies",
   積立金: "expReserves",
-  "投資及び出資金": "expInvestmentLoans",
+  投資及び出資金: "expInvestmentLoans",
   繰出金: "expTransfersOut",
-  "普通建設事業費_補助": "expConstructionSubsidy",
-  "普通建設事業費_単独": "expConstructionIndependent",
-  "普通建設事業費_計": "expConstructionTotal",
-  "災害復旧事業費_性質別": "expDisasterRecoveryNature",
+  普通建設事業費_補助: "expConstructionSubsidy",
+  普通建設事業費_単独: "expConstructionIndependent",
+  普通建設事業費_計: "expConstructionTotal",
+  災害復旧事業費_性質別: "expDisasterRecoveryNature",
   歳出合計: "expNatureTotal",
 };
 
@@ -112,7 +111,7 @@ const SURVEY_COLUMN_MAP: Record<string, keyof SettlementPreviewData> = {
   "積立金現在高　計": "reserveFundTotal",
   財政調整基金: "reserveFundFiscal",
   減債基金: "reserveFundDebt",
-  "その他特定目的基金": "reserveFundOther",
+  その他特定目的基金: "reserveFundOther",
   地方債現在高: "localBondBalance",
   人口: "population",
   類似団体区分: "similarGroupCode",
@@ -129,9 +128,7 @@ const DECIMAL_FIELDS: Set<keyof SettlementPreviewData> = new Set([
 
 const INT_FIELDS: Set<keyof SettlementPreviewData> = new Set(["population"]);
 
-const STRING_FIELDS: Set<keyof SettlementPreviewData> = new Set([
-  "similarGroupCode",
-]);
+const STRING_FIELDS: Set<keyof SettlementPreviewData> = new Set(["similarGroupCode"]);
 
 // -------------------------------------------------------------------
 // 団体コード列名の候補
@@ -139,10 +136,7 @@ const STRING_FIELDS: Set<keyof SettlementPreviewData> = new Set([
 const CODE_COLUMN_CANDIDATES = ["団体コード", "団体ｺｰﾄﾞ", "コード"];
 const NAME_COLUMN_CANDIDATES = ["団体名", "市町村名", "自治体名"];
 
-function findColumnValue(
-  row: RawExcelRow,
-  candidates: string[],
-): string | undefined {
+function findColumnValue(row: RawExcelRow, candidates: string[]): string | undefined {
   for (const key of candidates) {
     if (row[key] !== undefined) return String(row[key]);
   }
@@ -169,23 +163,20 @@ function getOrgName(row: RawExcelRow): string | undefined {
 
 function toBigInt(value: string | number | undefined): bigint {
   if (value === undefined || value === "" || value === "-") return 0n;
-  const num =
-    typeof value === "number" ? value : Number(String(value).replace(/,/g, ""));
+  const num = typeof value === "number" ? value : Number(String(value).replace(/,/g, ""));
   if (Number.isNaN(num)) return 0n;
   return BigInt(Math.round(num));
 }
 
 function toDecimal(value: string | number | undefined): number {
   if (value === undefined || value === "" || value === "-") return 0;
-  const num =
-    typeof value === "number" ? value : Number(String(value).replace(/,/g, ""));
+  const num = typeof value === "number" ? value : Number(String(value).replace(/,/g, ""));
   return Number.isNaN(num) ? 0 : num;
 }
 
 function toInt(value: string | number | undefined): number {
   if (value === undefined || value === "" || value === "-") return 0;
-  const num =
-    typeof value === "number" ? value : Number(String(value).replace(/,/g, ""));
+  const num = typeof value === "number" ? value : Number(String(value).replace(/,/g, ""));
   return Number.isNaN(num) ? 0 : Math.round(num);
 }
 
@@ -274,8 +265,8 @@ function applyColumnMap(
   data: SettlementPreviewData,
   row: RawExcelRow,
   columnMap: Record<string, keyof SettlementPreviewData>,
-  warnings: ValidationError[],
-  municipalityName: string,
+  _warnings: ValidationError[],
+  _municipalityName: string,
 ): void {
   for (const [excelCol, field] of Object.entries(columnMap)) {
     // Excel列名を行データから検索（完全一致 or 部分一致）
@@ -293,13 +284,13 @@ function applyColumnMap(
     if (value === undefined) continue;
 
     if (STRING_FIELDS.has(field)) {
-      (data as Record<string, unknown>)[field] = String(value);
+      (data as unknown as Record<string, unknown>)[field] = String(value);
     } else if (DECIMAL_FIELDS.has(field)) {
-      (data as Record<string, unknown>)[field] = toDecimal(value);
+      (data as unknown as Record<string, unknown>)[field] = toDecimal(value);
     } else if (INT_FIELDS.has(field)) {
-      (data as Record<string, unknown>)[field] = toInt(value);
+      (data as unknown as Record<string, unknown>)[field] = toInt(value);
     } else {
-      (data as Record<string, unknown>)[field] = toBigInt(value);
+      (data as unknown as Record<string, unknown>)[field] = toBigInt(value);
     }
   }
 }
@@ -316,13 +307,17 @@ export function mapExcelToSettlements(
   const allCodes = new Set<string>();
   const allRows: Record<
     string,
-    { survey?: RawExcelRow; revenue?: RawExcelRow; expensePurpose?: RawExcelRow; expenseNature?: RawExcelRow; localBond?: RawExcelRow; name?: string }
+    {
+      survey?: RawExcelRow;
+      revenue?: RawExcelRow;
+      expensePurpose?: RawExcelRow;
+      expenseNature?: RawExcelRow;
+      localBond?: RawExcelRow;
+      name?: string;
+    }
   > = {};
 
-  function collectRows(
-    rows: RawExcelRow[],
-    fileKey: keyof ParsedExcelData,
-  ): void {
+  function collectRows(rows: RawExcelRow[], fileKey: keyof ParsedExcelData): void {
     for (const row of rows) {
       const code = getOrgCode(row);
       if (!code) continue;
@@ -356,8 +351,7 @@ export function mapExcelToSettlements(
 
     // 団体コード5桁 → Municipality ルックアップ
     const municipality = municipalityLookup.get(code5);
-    const municipalityName =
-      rows.name ?? municipality?.displayName ?? code5;
+    const municipalityName = rows.name ?? municipality?.displayName ?? code5;
 
     if (!municipality) {
       errors.push({

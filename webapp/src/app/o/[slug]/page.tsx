@@ -2,7 +2,7 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { loadOrganizations } from "@/server/contexts/public-finance/presentation/loaders/load-organizations";
 
-const DEFAULT_YEAR = 2026;
+const DEFAULT_YEAR = 2022;
 
 interface OrgPageProps {
   params: Promise<{

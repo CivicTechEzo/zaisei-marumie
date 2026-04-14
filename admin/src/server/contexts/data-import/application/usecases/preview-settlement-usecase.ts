@@ -7,10 +7,7 @@
 
 import type { FiscalYearCodeString } from "@/server/contexts/data-import/domain/models/fiscal-year-code";
 import { fiscalYearCodeToYear } from "@/server/contexts/data-import/domain/models/fiscal-year-code";
-import type {
-  SettlementPreview,
-  SettlementPreviewSummary,
-} from "@/server/contexts/data-import/domain/models/settlement-preview";
+import type { PreviewSettlementResult } from "@/server/contexts/data-import/domain/models/settlement-preview";
 import { computePreviewSummary } from "@/server/contexts/data-import/domain/models/settlement-preview";
 import type { ISettlementRepository } from "@/server/contexts/data-import/domain/repositories/settlement-repository.interface";
 import { mapExcelToSettlements } from "@/server/contexts/data-import/domain/services/excel-to-settlement-mapper";
@@ -18,12 +15,7 @@ import type { ParsedExcelData } from "@/server/contexts/data-import/domain/servi
 import { validateSettlementPreviews } from "@/server/contexts/data-import/domain/services/settlement-validator";
 import type { ISoumuDataFetcher } from "@/server/contexts/data-import/domain/services/soumu-data-fetcher.interface";
 
-export interface PreviewSettlementResult {
-  fiscalYear: number;
-  yearCode: FiscalYearCodeString;
-  previews: SettlementPreview[];
-  summary: SettlementPreviewSummary;
-}
+export type { PreviewSettlementResult };
 
 export class PreviewSettlementUsecase {
   constructor(
@@ -57,9 +49,7 @@ export class PreviewSettlementUsecase {
 
     // 3. Municipality ルックアップテーブルを構築
     const municipalities = await this.repository.findAllHokkaidoMunicipalities();
-    const lookup = new Map(
-      municipalities.map((m) => [m.municipalityCode.slice(0, 5), m]),
-    );
+    const lookup = new Map(municipalities.map((m) => [m.municipalityCode.slice(0, 5), m]));
 
     // 4. Excel行 → SettlementPreview にマッピング
     const rawPreviews = mapExcelToSettlements(parsed, fiscalYear, lookup);

@@ -41,9 +41,7 @@ export const FISCAL_YEAR_OPTIONS: {
   { code: "h27", label: "平成27年度 (2015)", fiscalYear: 2015 },
 ];
 
-export function isValidFiscalYearCode(
-  code: string,
-): code is FiscalYearCodeString {
+export function isValidFiscalYearCode(code: string): code is FiscalYearCodeString {
   return (SUPPORTED_CODES as readonly string[]).includes(code);
 }
 

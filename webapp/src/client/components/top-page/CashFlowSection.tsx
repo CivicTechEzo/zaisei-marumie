@@ -10,21 +10,19 @@ import FinancialSummarySection from "@/client/components/top-page/features/finan
 import type { SankeyData } from "@/types/sankey";
 
 interface CashFlowSectionProps {
-  political?: SankeyData | null;
-  friendly?: SankeyData | null;
-  updatedAt: string;
+  purpose?: SankeyData | null;
+  nature?: SankeyData | null;
   organizationName?: string;
 }
 
 export default function CashFlowSection({
-  political,
-  friendly,
-  updatedAt,
+  purpose,
+  nature,
   organizationName,
 }: CashFlowSectionProps) {
-  const [activeTab, setActiveTab] = useState<"political" | "friendly">("friendly");
+  const [activeTab, setActiveTab] = useState<"purpose" | "nature">("purpose");
 
-  const currentData = activeTab === "political" ? political : friendly;
+  const currentData = activeTab === "purpose" ? purpose : nature;
 
   return (
     <MainColumnCard id="cash-flow">
@@ -32,36 +30,35 @@ export default function CashFlowSection({
         icon={<Image src="/icons/icon-cashflow.svg" alt="Cash flow icon" width={30} height={31} />}
         organizationName={organizationName || "未登録の自治体"}
         title="収支の流れ"
-        updatedAt={updatedAt}
         subtitle="どこからお金を得て、何に使っているか"
       />
 
       {/* 財務サマリー */}
-      <FinancialSummarySection sankeyData={friendly ?? null} />
+      <FinancialSummarySection sankeyData={purpose ?? null} />
 
       {/* タブ */}
       <div className="flex gap-7 border-b border-gray-300 mb-4">
         <button
           type="button"
-          onClick={() => setActiveTab("friendly")}
+          onClick={() => setActiveTab("purpose")}
           className={`pb-2 font-bold text-base border-b-2 transition-colors leading-tight cursor-pointer ${
-            activeTab === "friendly"
+            activeTab === "purpose"
               ? "border-[#238778] text-[#238778]"
               : "border-transparent text-[#9CA3AF] hover:text-gray-600"
           }`}
         >
-          詳細の区分
+          目的別
         </button>
         <button
           type="button"
-          onClick={() => setActiveTab("political")}
+          onClick={() => setActiveTab("nature")}
           className={`pb-2 font-bold text-base border-b-2 transition-colors leading-tight cursor-pointer ${
-            activeTab === "political"
+            activeTab === "nature"
               ? "border-[#238778] text-[#238778]"
               : "border-transparent text-[#9CA3AF] hover:text-gray-600"
           }`}
         >
-          法律上の区分
+          性質別
         </button>
       </div>
 
@@ -72,11 +69,6 @@ export default function CashFlowSection({
         ) : (
           <div className="text-gray-500 mx-4">サンキー図データが取得できませんでした</div>
         )}
-      </div>
-
-      {/* 更新日時 */}
-      <div className="text-right md:hidden">
-        <span className="text-xs font-normal text-[#9CA3AF] leading-[1.33]">{updatedAt}</span>
       </div>
     </MainColumnCard>
   );

@@ -1,20 +1,23 @@
 import "server-only";
 
 import type { SankeyData } from "@/server/contexts/public-finance/domain/models/sankey-data";
-import type { IPoliticalOrganizationRepository } from "@/server/contexts/public-finance/domain/repositories/political-organization-repository.interface";
-import type { IBalanceSheetRepository } from "@/server/contexts/public-finance/domain/repositories/balance-sheet-repository.interface";
-import type { ITransactionRepository } from "@/server/contexts/public-finance/domain/repositories/transaction-repository.interface";
-import type { IBalanceSnapshotRepository } from "@/server/contexts/public-finance/domain/repositories/balance-snapshot-repository.interface";
-import {
-  CategoryAggregation,
-  DEFAULT_SUBCATEGORY_MAX_COUNT,
+import type { IMunicipalityRepository } from "@/server/contexts/public-finance/domain/repositories/municipality-repository.interface";
+import type { IFiscalSettlementRepository } from "@/server/contexts/public-finance/domain/repositories/fiscal-settlement-repository.interface";
+import type {
+  CategoryAggregation as CategoryAggregationType,
+  CategoryAggregationItem,
 } from "@/server/contexts/public-finance/domain/models/category-aggregation";
+import { CategoryAggregation } from "@/server/contexts/public-finance/domain/models/category-aggregation";
 import { SankeyDataBuilder } from "@/server/contexts/public-finance/domain/services/sankey-data-builder";
+import {
+  buildCategoryAggregation,
+  type ExpenseDisplayMode,
+} from "@/server/contexts/public-finance/domain/services/settlement-to-aggregation";
 
 interface GetSankeyAggregationParams {
   slugs: string[];
   financialYear: number;
-  categoryType?: "political-category" | "friendly-category";
+  categoryType: ExpenseDisplayMode;
 }
 
 interface GetSankeyAggregationResult {
@@ -23,68 +26,56 @@ interface GetSankeyAggregationResult {
 
 export class GetSankeyAggregationUsecase {
   constructor(
-    private transactionRepository: ITransactionRepository,
-    private politicalOrganizationRepository: IPoliticalOrganizationRepository,
-    private balanceSnapshotRepository: IBalanceSnapshotRepository,
-    private balanceSheetRepository: IBalanceSheetRepository,
+    private municipalityRepository: IMunicipalityRepository,
+    private fiscalSettlementRepository: IFiscalSettlementRepository,
   ) {}
 
   async execute(params: GetSankeyAggregationParams): Promise<GetSankeyAggregationResult> {
     try {
       // 1. 自治体を取得
-      const politicalOrganizations = await this.politicalOrganizationRepository.findBySlugs(
-        params.slugs,
-      );
+      const municipalities = await this.municipalityRepository.findBySlugs(params.slugs);
 
-      if (politicalOrganizations.length === 0) {
-        throw new Error(
-          `Political organizations with slugs "${params.slugs.join(", ")}" not found`,
-        );
+      if (municipalities.length === 0) {
+        throw new Error(`Municipalities with slugs "${params.slugs.join(", ")}" not found`);
       }
 
-      const organizationIds = politicalOrganizations.map((org) => org.id);
-      const isFriendlyCategory = params.categoryType === "friendly-category";
-
-      // 2. データを並列取得
-      const organizationIdsAsString = organizationIds.map((id) => id.toString());
-      const [rawAggregation, balancesByYear, liabilityBalance] = await Promise.all([
-        this.transactionRepository.getCategoryAggregationForSankey(
-          organizationIds,
-          params.financialYear,
-          params.categoryType,
+      // 2. 各自治体の決算データを取得
+      const settlements = await Promise.all(
+        municipalities.map((m) =>
+          this.fiscalSettlementRepository.findByMunicipalityAndYear(m.id, params.financialYear),
         ),
-        this.balanceSnapshotRepository.getTotalLatestBalancesByYear(
-          organizationIdsAsString,
-          params.financialYear,
-        ),
-        this.balanceSheetRepository.getCurrentLiabilities(
-          organizationIdsAsString,
-          params.financialYear,
-        ),
-      ]);
-
-      // 3. ドメインモデルで変換処理
-      let aggregation = CategoryAggregation.renameOtherCategories(rawAggregation);
-
-      if (isFriendlyCategory) {
-        aggregation = CategoryAggregation.consolidateSmallItems(aggregation, {
-          targetMaxCount: DEFAULT_SUBCATEGORY_MAX_COUNT,
-        });
-      }
-
-      aggregation = CategoryAggregation.adjustWithBalance(
-        aggregation,
-        {
-          previousYearBalance: balancesByYear.previousYear,
-          currentYearBalance: balancesByYear.currentYear,
-          liabilityBalance,
-        },
-        { isFriendlyCategory },
       );
 
-      // 4. ドメインサービスでSankeyDataを構築
+      const validSettlements = settlements.filter((s) => s !== null);
+
+      if (validSettlements.length === 0) {
+        throw new Error(`No settlement data found for year ${params.financialYear}`);
+      }
+
+      // 3. FiscalYearSettlement → CategoryAggregation 変換
+      //    複数自治体の場合は各科目を合算する
+      const aggregations = validSettlements.map((s) =>
+        buildCategoryAggregation(s, params.categoryType),
+      );
+
+      let rawAggregation = aggregations[0];
+      for (let i = 1; i < aggregations.length; i++) {
+        rawAggregation = mergeAggregations(rawAggregation, aggregations[i]);
+      }
+
+      // 4. ドメインモデルで変換処理
+      const aggregation = CategoryAggregation.renameOtherCategories(rawAggregation);
+
+      // 5. 収支差額の調整
+      const totalRevenue = rawAggregation.income.reduce((s, item) => s + item.totalAmount, 0);
+      const totalExpense = rawAggregation.expense.reduce((s, item) => s + item.totalAmount, 0);
+      const adjusted = CategoryAggregation.adjustWithBalance(aggregation, {
+        currentYearBalance: totalRevenue - totalExpense,
+      });
+
+      // 6. ドメインサービスでSankeyDataを構築
       const builder = new SankeyDataBuilder();
-      const sankeyData = builder.build(aggregation);
+      const sankeyData = builder.build(adjusted);
 
       return { sankeyData };
     } catch (error) {
@@ -93,4 +84,29 @@ export class GetSankeyAggregationUsecase {
       );
     }
   }
+}
+
+/**
+ * 複数の CategoryAggregation を科目ごとに合算する
+ */
+function mergeAggregations(
+  a: CategoryAggregationType,
+  b: CategoryAggregationType,
+): CategoryAggregationType {
+  const mergeItems = (itemsA: CategoryAggregationItem[], itemsB: CategoryAggregationItem[]) => {
+    const map = new Map<string, number>();
+    for (const item of [...itemsA, ...itemsB]) {
+      const key = item.subcategory ? `${item.category}::${item.subcategory}` : item.category;
+      map.set(key, (map.get(key) ?? 0) + item.totalAmount);
+    }
+    return Array.from(map.entries()).map(([key, totalAmount]) => {
+      const [category, subcategory] = key.split("::");
+      return subcategory ? { category, subcategory, totalAmount } : { category, totalAmount };
+    });
+  };
+
+  return {
+    income: mergeItems(a.income, b.income),
+    expense: mergeItems(a.expense, b.expense),
+  };
 }

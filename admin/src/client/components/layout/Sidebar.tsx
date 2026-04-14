@@ -3,7 +3,7 @@ import "client-only";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { UserRole } from "@prisma/client";
+import type { UserRole } from "@/server/contexts/auth/domain/models/user-role";
 import { Button } from "@/client/components/ui";
 
 type NavItem = {
@@ -38,29 +38,12 @@ export default function Sidebar({
       title: "基本情報",
       items: [
         { href: "/user-info", label: "ユーザー情報" },
-        { href: "/political-organizations", label: "自治体" },
         { href: "/users", label: "ユーザー管理", adminOnly: true },
       ],
     },
     {
       title: "データ取り込み",
-      items: [
-        { href: "/import-settlement", label: "財政データ取り込み" },
-        { href: "/transactions", label: "取引一覧" },
-        { href: "/bulk-delete-transactions", label: "取引一括削除" },
-        { href: "/upload-csv", label: "CSVアップロード" },
-        { href: "/balance-snapshots", label: "残高登録" },
-      ],
-    },
-    {
-      title: "報告書",
-      items: [
-        { href: "/counterparts", label: "取引先マスタ" },
-        { href: "/assign/counterparts", label: "取引先紐付け" },
-        { href: "/donors", label: "寄付者マスタ" },
-        { href: "/assign/donors", label: "寄付者紐付け" },
-        { href: "/export-report", label: "報告書エクスポート" },
-      ],
+      items: [{ href: "/import-settlement", label: "財政データ取り込み" }],
     },
   ];
 

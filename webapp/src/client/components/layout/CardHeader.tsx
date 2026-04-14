@@ -4,7 +4,7 @@ interface CardHeaderProps {
   icon: React.ReactNode;
   title: string;
   organizationName?: string;
-  updatedAt: string;
+  updatedAt?: string;
   subtitle: string;
 }
 

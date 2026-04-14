@@ -24,9 +24,7 @@ export function validateSettlementPreviews(
   existingSettlements: ExistingSettlement[],
 ): SettlementPreview[] {
   const existingSet = new Set(
-    existingSettlements.map(
-      (e) => `${e.municipalityId.toString()}_${e.fiscalYear}`,
-    ),
+    existingSettlements.map((e) => `${e.municipalityId.toString()}_${e.fiscalYear}`),
   );
 
   return previews.map((preview) => {

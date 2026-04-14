@@ -6,7 +6,7 @@
  * 管理画面の少数ユーザー向けで、BigIntをそのまま保持できる。
  */
 
-import type { PreviewSettlementResult } from "@/server/contexts/data-import/application/usecases/preview-settlement-usecase";
+import type { PreviewSettlementResult } from "@/server/contexts/data-import/domain/models/settlement-preview";
 
 interface CacheEntry {
   result: PreviewSettlementResult;
@@ -18,10 +18,7 @@ const TTL_MS = 10 * 60 * 1000;
 
 const cache = new Map<string, CacheEntry>();
 
-export function setPreviewCache(
-  yearCode: string,
-  result: PreviewSettlementResult,
-): void {
+export function setPreviewCache(yearCode: string, result: PreviewSettlementResult): void {
   // 古いエントリをクリーンアップ
   const now = Date.now();
   for (const [key, entry] of cache) {
@@ -36,9 +33,7 @@ export function setPreviewCache(
   });
 }
 
-export function getPreviewCache(
-  yearCode: string,
-): PreviewSettlementResult | null {
+export function getPreviewCache(yearCode: string): PreviewSettlementResult | null {
   const entry = cache.get(yearCode);
   if (!entry) return null;
 
