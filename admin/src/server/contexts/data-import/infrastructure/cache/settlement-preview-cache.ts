@@ -6,7 +6,7 @@
  * 管理画面の少数ユーザー向けで、BigIntをそのまま保持できる。
  */
 
-import type { PreviewSettlementResult } from "@/server/contexts/data-import/application/usecases/preview-settlement-usecase";
+import type { PreviewSettlementResult } from "@/server/contexts/data-import/domain/models/settlement-preview";
 
 interface CacheEntry {
   result: PreviewSettlementResult;
