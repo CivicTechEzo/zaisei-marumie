@@ -1,14 +1,14 @@
 import "server-only";
 import { redirect } from "next/navigation";
-import { loadOrganizations } from "@/server/contexts/public-finance/presentation/loaders/load-organizations";
+import { loadMunicipalities } from "@/server/contexts/public-finance/presentation/loaders/load-municipalities";
 
 export default async function NotFound() {
-  const { default: defaultSlug } = await loadOrganizations();
+  const { default: defaultSlug } = await loadMunicipalities();
 
   if (defaultSlug) {
     redirect(`/o/${defaultSlug}`);
   } else {
-    // 組織が存在しない場合はルートページにリダイレクト
+    // 自治体が存在しない場合はルートページにリダイレクト
     redirect("/");
   }
 }

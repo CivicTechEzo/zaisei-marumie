@@ -10,7 +10,7 @@ import MainColumn from "@/client/components/layout/MainColumn";
 import CashFlowSection from "@/client/components/top-page/CashFlowSection";
 import ProgressSection from "@/client/components/top-page/ProgressSection";
 import { loadTopPageData } from "@/server/contexts/public-finance/presentation/loaders/load-top-page-data";
-import { loadOrganizations } from "@/server/contexts/public-finance/presentation/loaders/load-organizations";
+import { loadMunicipalities } from "@/server/contexts/public-finance/presentation/loaders/load-municipalities";
 import { loadAvailableYears } from "@/server/contexts/public-finance/presentation/loaders/load-available-years";
 
 export const revalidate = 300; // 5 minutes
@@ -25,7 +25,7 @@ interface OrgPageProps {
 export async function generateMetadata({ params }: OrgPageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  const { municipalities } = await loadOrganizations();
+  const { municipalities } = await loadMunicipalities();
   const currentMunicipality = municipalities.find((m) => m.slug === slug);
 
   const title = currentMunicipality?.displayName
@@ -50,7 +50,7 @@ export default async function OrgPage({ params }: OrgPageProps) {
   const fiscalYear = yearNumber;
 
   // slugの妥当性をチェックし、必要に応じてリダイレクト
-  const { default: defaultSlug, municipalities } = await loadOrganizations();
+  const { default: defaultSlug, municipalities } = await loadMunicipalities();
   if (!municipalities.some((m) => m.slug === slug)) {
     redirect(`/o/${defaultSlug}/${fiscalYear}`);
   }
@@ -72,7 +72,7 @@ export default async function OrgPage({ params }: OrgPageProps) {
       <CashFlowSection
         purpose={data?.purpose ?? null}
         nature={data?.nature ?? null}
-        organizationName={currentMunicipality?.displayName}
+        municipalityName={currentMunicipality?.displayName}
       />
       <TransparencySection title="あなたのまちのお金の使いみち、見てみませんか？" />
 

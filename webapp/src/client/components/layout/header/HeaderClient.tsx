@@ -3,7 +3,7 @@ import "client-only";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import OrganizationYearSheet from "@/client/components/layout/header/OrganizationYearSheet";
+import MunicipalityYearSheet from "@/client/components/layout/header/MunicipalityYearSheet";
 import type { MunicipalitiesResponse } from "@/types/municipality";
 
 const getNavigationItems = (currentSlug: string, currentYear: number) => [
@@ -21,11 +21,11 @@ const getNavigationItems = (currentSlug: string, currentYear: number) => [
 ];
 
 interface HeaderClientProps {
-  organizations: MunicipalitiesResponse;
+  municipalities: MunicipalitiesResponse;
   availableYears: number[];
 }
 
-export default function HeaderClient({ organizations, availableYears }: HeaderClientProps) {
+export default function HeaderClient({ municipalities, availableYears }: HeaderClientProps) {
   const pathname = usePathname();
 
   // 現在のslugとyearを取得（/o/[slug]/[year]/... の形式の場合）
@@ -34,7 +34,7 @@ export default function HeaderClient({ organizations, availableYears }: HeaderCl
   const yearFromPath =
     pathSegments[1] === "o" && pathSegments[3] ? parseInt(pathSegments[3], 10) : null;
 
-  const currentSlug = slugFromPath ?? organizations.default;
+  const currentSlug = slugFromPath ?? municipalities.default;
   const defaultYear = availableYears[0] || 2022;
   const currentYear = yearFromPath && !Number.isNaN(yearFromPath) ? yearFromPath : defaultYear;
 
@@ -89,7 +89,7 @@ export default function HeaderClient({ organizations, availableYears }: HeaderCl
             </div>
           </Link>
 
-          {/* Navigation Menu + Organization Selector */}
+          {/* Navigation Menu + Municipality Selector */}
           <div className="flex items-center gap-8 flex-1 justify-end h-12 min-w-0">
             <nav
               className="hidden lg:flex items-center gap-6 flex-shrink-0"
@@ -115,8 +115,8 @@ export default function HeaderClient({ organizations, availableYears }: HeaderCl
                 })}
             </nav>
             <div className="flex items-center w-full max-w-[217px] min-w-0 h-12 flex-shrink">
-              <OrganizationYearSheet
-                organizations={organizations}
+              <MunicipalityYearSheet
+                municipalities={municipalities}
                 availableYears={availableYears}
                 initialSlug={currentSlug ?? undefined}
                 initialYear={currentYear}

@@ -5,19 +5,19 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import type { MunicipalitiesResponse } from "@/types/municipality";
 
-interface OrganizationYearSheetProps {
-  organizations: MunicipalitiesResponse;
+interface MunicipalityYearSheetProps {
+  municipalities: MunicipalitiesResponse;
   availableYears: number[];
   initialSlug?: string;
   initialYear?: number;
 }
 
-export default function OrganizationYearSheet({
-  organizations,
+export default function MunicipalityYearSheet({
+  municipalities,
   availableYears,
   initialSlug,
   initialYear,
-}: OrganizationYearSheetProps) {
+}: MunicipalityYearSheetProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +38,7 @@ export default function OrganizationYearSheet({
     }
   }, [pathname]);
 
-  const currentOrganization = organizations.municipalities.find((org) => org.slug === currentSlug);
+  const currentMunicipality = municipalities.municipalities.find((m) => m.slug === currentSlug);
 
   const handleSelect = (slug: string, year: number) => {
     const pathSegments = pathname.split("/");
@@ -56,7 +56,7 @@ export default function OrganizationYearSheet({
     router.push(newPath);
   };
 
-  const handleOrganizationSelect = (slug: string) => {
+  const handleMunicipalitySelect = (slug: string) => {
     handleSelect(slug, currentYear);
   };
 
@@ -78,7 +78,7 @@ export default function OrganizationYearSheet({
       >
         <span className="flex flex-col gap-1.5 items-start flex-1 min-w-0 leading-none">
           <span className="text-[14px] leading-none text-black truncate w-full text-left">
-            {currentOrganization?.displayName || "自治体を選択"}
+            {currentMunicipality?.displayName || "自治体を選択"}
           </span>
           <span className="text-[9px] leading-none text-[#238778]">{currentYear}年度</span>
         </span>
@@ -104,19 +104,19 @@ export default function OrganizationYearSheet({
 
           {/* Dropdown Content */}
           <div className="absolute right-0 top-full mt-1 z-50 w-68 bg-white rounded-lg border border-black/50 shadow-lg py-3 max-h-[70vh] overflow-y-auto">
-            {/* Organization Selection */}
+            {/* Municipality Selection */}
             <div className="px-4 flex flex-col gap-1">
               <p className="text-[11px] text-[#5a5a5a]">表示する自治体</p>
               <div className="flex flex-col">
-                {organizations.municipalities.map((org) => (
+                {municipalities.municipalities.map((m) => (
                   <button
-                    key={org.slug}
+                    key={m.slug}
                     type="button"
-                    onClick={() => handleOrganizationSelect(org.slug)}
+                    onClick={() => handleMunicipalitySelect(m.slug)}
                     className="flex items-center gap-2 h-9 pl-6 text-left cursor-pointer rounded-md hover:bg-gray-100 transition-colors"
                   >
                     <span className="w-3 flex items-center justify-center">
-                      {currentSlug === org.slug && (
+                      {currentSlug === m.slug && (
                         <svg
                           width="13"
                           height="11"
@@ -136,7 +136,7 @@ export default function OrganizationYearSheet({
                         </svg>
                       )}
                     </span>
-                    <span className="text-xs text-gray-900">{org.displayName}</span>
+                    <span className="text-xs text-gray-900">{m.displayName}</span>
                   </button>
                 ))}
               </div>

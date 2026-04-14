@@ -1,6 +1,6 @@
 import "server-only";
 import { redirect } from "next/navigation";
-import { loadOrganizations } from "@/server/contexts/public-finance/presentation/loaders/load-organizations";
+import { loadMunicipalities } from "@/server/contexts/public-finance/presentation/loaders/load-municipalities";
 import { loadAvailableYears } from "@/server/contexts/public-finance/presentation/loaders/load-available-years";
 
 interface OrgPageProps {
@@ -13,7 +13,7 @@ export default async function OrgPage({ params }: OrgPageProps) {
   const { slug } = await params;
 
   // slugの妥当性をチェックし、必要に応じてデフォルトslugを使用
-  const { default: defaultSlug, municipalities } = await loadOrganizations();
+  const { default: defaultSlug, municipalities } = await loadMunicipalities();
   const validSlug = municipalities.some((m) => m.slug === slug) ? slug : defaultSlug;
 
   if (!validSlug) {

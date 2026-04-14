@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     revalidateTag("top-page-data", "max");
-    revalidateTag("organizations", "max");
+    revalidateTag("municipalities", "max");
 
     return NextResponse.json({
       success: true,
