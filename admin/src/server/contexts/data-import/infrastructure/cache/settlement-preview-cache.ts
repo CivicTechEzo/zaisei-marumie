@@ -18,10 +18,7 @@ const TTL_MS = 10 * 60 * 1000;
 
 const cache = new Map<string, CacheEntry>();
 
-export function setPreviewCache(
-  yearCode: string,
-  result: PreviewSettlementResult,
-): void {
+export function setPreviewCache(yearCode: string, result: PreviewSettlementResult): void {
   // 古いエントリをクリーンアップ
   const now = Date.now();
   for (const [key, entry] of cache) {
@@ -36,9 +33,7 @@ export function setPreviewCache(
   });
 }
 
-export function getPreviewCache(
-  yearCode: string,
-): PreviewSettlementResult | null {
+export function getPreviewCache(yearCode: string): PreviewSettlementResult | null {
   const entry = cache.get(yearCode);
   if (!entry) return null;
 

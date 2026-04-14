@@ -23,9 +23,7 @@ function buildPageUrl(yearCode: FiscalYearCodeString): string {
   return `${BASE_URL}/iken/zaisei/${yearCode}_shichouson.html`;
 }
 
-export async function scrapeExcelUrls(
-  yearCode: FiscalYearCodeString,
-): Promise<ExcelFileUrls> {
+export async function scrapeExcelUrls(yearCode: FiscalYearCodeString): Promise<ExcelFileUrls> {
   const pageUrl = buildPageUrl(yearCode);
 
   const response = await fetch(pageUrl, {
@@ -36,9 +34,7 @@ export async function scrapeExcelUrls(
   });
 
   if (!response.ok) {
-    throw new Error(
-      `総務省ページの取得に失敗しました: ${pageUrl} (HTTP ${response.status})`,
-    );
+    throw new Error(`総務省ページの取得に失敗しました: ${pageUrl} (HTTP ${response.status})`);
   }
 
   const html = await response.text();

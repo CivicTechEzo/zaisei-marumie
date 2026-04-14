@@ -25,9 +25,7 @@ export async function parseExcelFromUrl(url: string): Promise<RawExcelRow[]> {
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Excelファイルのダウンロードに失敗しました: ${url} (HTTP ${response.status})`,
-    );
+    throw new Error(`Excelファイルのダウンロードに失敗しました: ${url} (HTTP ${response.status})`);
   }
 
   const arrayBuffer = await response.arrayBuffer();
@@ -48,9 +46,7 @@ export async function parseExcelFromUrl(url: string): Promise<RawExcelRow[]> {
 /**
  * Excelバッファからパースする（CLIスクリプト用）
  */
-export async function parseExcelFromBuffer(
-  buffer: Buffer,
-): Promise<RawExcelRow[]> {
+export async function parseExcelFromBuffer(buffer: Buffer): Promise<RawExcelRow[]> {
   const data = new Uint8Array(buffer);
   const workbook = XLSX.read(data, { type: "array" });
   const sheetName = workbook.SheetNames[0];
@@ -65,14 +61,11 @@ export async function parseExcelFromBuffer(
 
 function parseSheet(sheet: XLSX.WorkSheet): RawExcelRow[] {
   // シート全体をJSON配列として取得（ヘッダーなし、全行）
-  const rawRows: (string | number | undefined)[][] = XLSX.utils.sheet_to_json(
-    sheet,
-    {
-      header: 1,
-      defval: undefined,
-      blankrows: false,
-    },
-  );
+  const rawRows: (string | number | undefined)[][] = XLSX.utils.sheet_to_json(sheet, {
+    header: 1,
+    defval: undefined,
+    blankrows: false,
+  });
 
   // ヘッダー行を検出（「団体コード」列を探す）
   let headerRowIndex = -1;
@@ -96,9 +89,7 @@ function parseSheet(sheet: XLSX.WorkSheet): RawExcelRow[] {
   }
 
   if (headerRowIndex < 0 || codeColIndex < 0) {
-    throw new Error(
-      "ヘッダー行が検出できません（「団体コード」列が見つかりません）",
-    );
+    throw new Error("ヘッダー行が検出できません（「団体コード」列が見つかりません）");
   }
 
   // データ行を処理（ヘッダー行の次の行から）

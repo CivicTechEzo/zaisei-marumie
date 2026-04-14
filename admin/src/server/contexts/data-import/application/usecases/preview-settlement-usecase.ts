@@ -57,9 +57,7 @@ export class PreviewSettlementUsecase {
 
     // 3. Municipality ルックアップテーブルを構築
     const municipalities = await this.repository.findAllHokkaidoMunicipalities();
-    const lookup = new Map(
-      municipalities.map((m) => [m.municipalityCode.slice(0, 5), m]),
-    );
+    const lookup = new Map(municipalities.map((m) => [m.municipalityCode.slice(0, 5), m]));
 
     // 4. Excel行 → SettlementPreview にマッピング
     const rawPreviews = mapExcelToSettlements(parsed, fiscalYear, lookup);

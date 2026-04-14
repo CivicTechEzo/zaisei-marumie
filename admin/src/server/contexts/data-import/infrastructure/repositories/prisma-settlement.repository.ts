@@ -16,9 +16,7 @@ import type {
 export class PrismaSettlementRepository implements ISettlementRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async findExistingByFiscalYear(
-    fiscalYear: number,
-  ): Promise<ExistingSettlement[]> {
+  async findExistingByFiscalYear(fiscalYear: number): Promise<ExistingSettlement[]> {
     const records = await this.prisma.fiscalYearSettlement.findMany({
       where: { fiscalYear },
       select: { municipalityId: true, fiscalYear: true },
@@ -95,9 +93,7 @@ export class PrismaSettlementRepository implements ISettlementRepository {
 /**
  * SettlementPreviewData → Prisma create/update 用データに変換
  */
-function bigintDataToCreate(
-  data: UpsertSettlementInput["data"],
-): Record<string, unknown> {
+function bigintDataToCreate(data: UpsertSettlementInput["data"]): Record<string, unknown> {
   return {
     // 歳入
     revLocalTax: data.revLocalTax,

@@ -43,7 +43,7 @@ export default async function OrgPage({ params }: OrgPageProps) {
 
   // 年度の妥当性をチェック
   const yearNumber = parseInt(yearParam, 10);
-  if (isNaN(yearNumber) || yearNumber < 2000 || yearNumber > 2030) {
+  if (Number.isNaN(yearNumber) || yearNumber < 2000 || yearNumber > 2030) {
     redirect(`/o/${slug}/${DEFAULT_YEAR}`);
   }
   const financialYear = yearNumber;

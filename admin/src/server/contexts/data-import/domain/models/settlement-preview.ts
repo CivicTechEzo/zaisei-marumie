@@ -111,9 +111,7 @@ export interface SettlementPreviewSummary {
   warnings: ValidationError[];
 }
 
-export function computePreviewSummary(
-  previews: SettlementPreview[],
-): SettlementPreviewSummary {
+export function computePreviewSummary(previews: SettlementPreview[]): SettlementPreviewSummary {
   const allErrors: ValidationError[] = [];
   const allWarnings: ValidationError[] = [];
 

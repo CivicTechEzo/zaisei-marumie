@@ -63,28 +63,25 @@ export async function fetchSettlementPreview(
     const dataFetcher = new SoumuDataFetcher();
     const usecase = new PreviewSettlementUsecase(repository, dataFetcher);
 
-    const result = await usecase.execute(
-      parsed.yearCode as FiscalYearCodeString,
-    );
+    const result = await usecase.execute(parsed.yearCode as FiscalYearCodeString);
 
     // キャッシュに保持（import action で再利用）
     setPreviewCache(parsed.yearCode, result);
 
     // BigInt → string にシリアライズ
-    const serializedPreviews: SerializedSettlementPreview[] =
-      result.previews.map((p) => ({
-        municipalityCode: p.municipalityCode,
-        municipalityName: p.municipalityName,
-        municipalityId: p.municipalityId?.toString() ?? null,
-        fiscalYear: p.fiscalYear,
-        status: p.status,
-        revTotal: p.data.revTotal.toString(),
-        expPurposeTotal: p.data.expPurposeTotal.toString(),
-        expNatureTotal: p.data.expNatureTotal.toString(),
-        population: p.data.population,
-        errors: p.errors,
-        warnings: p.warnings,
-      }));
+    const serializedPreviews: SerializedSettlementPreview[] = result.previews.map((p) => ({
+      municipalityCode: p.municipalityCode,
+      municipalityName: p.municipalityName,
+      municipalityId: p.municipalityId?.toString() ?? null,
+      fiscalYear: p.fiscalYear,
+      status: p.status,
+      revTotal: p.data.revTotal.toString(),
+      expPurposeTotal: p.data.expPurposeTotal.toString(),
+      expNatureTotal: p.data.expNatureTotal.toString(),
+      population: p.data.population,
+      errors: p.errors,
+      warnings: p.warnings,
+    }));
 
     return {
       ok: true,
@@ -95,8 +92,7 @@ export async function fetchSettlementPreview(
     };
   } catch (error) {
     console.error("Settlement preview error:", error);
-    const message =
-      error instanceof Error ? error.message : "サーバー内部エラーが発生しました";
+    const message = error instanceof Error ? error.message : "サーバー内部エラーが発生しました";
     return { ok: false, error: message };
   }
 }

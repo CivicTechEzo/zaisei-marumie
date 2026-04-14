@@ -89,10 +89,7 @@ export const CategoryAggregation = {
    * 歳入合計 > 歳出合計の場合、差額を「翌年度繰越」として支出側に追加する。
    * これによりサンキー図の左右バランスが取れる。
    */
-  adjustWithBalance(
-    data: CategoryAggregation,
-    balance: BalanceInfo,
-  ): CategoryAggregation {
+  adjustWithBalance(data: CategoryAggregation, balance: BalanceInfo): CategoryAggregation {
     if (balance.currentYearBalance <= 0) {
       return data;
     }

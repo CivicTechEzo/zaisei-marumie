@@ -7,9 +7,7 @@ import type {
   CategoryAggregation as CategoryAggregationType,
   CategoryAggregationItem,
 } from "@/server/contexts/public-finance/domain/models/category-aggregation";
-import {
-  CategoryAggregation,
-} from "@/server/contexts/public-finance/domain/models/category-aggregation";
+import { CategoryAggregation } from "@/server/contexts/public-finance/domain/models/category-aggregation";
 import { SankeyDataBuilder } from "@/server/contexts/public-finance/domain/services/sankey-data-builder";
 import {
   buildCategoryAggregation,
@@ -38,27 +36,20 @@ export class GetSankeyAggregationUsecase {
       const municipalities = await this.municipalityRepository.findBySlugs(params.slugs);
 
       if (municipalities.length === 0) {
-        throw new Error(
-          `Municipalities with slugs "${params.slugs.join(", ")}" not found`,
-        );
+        throw new Error(`Municipalities with slugs "${params.slugs.join(", ")}" not found`);
       }
 
       // 2. 各自治体の決算データを取得
       const settlements = await Promise.all(
         municipalities.map((m) =>
-          this.fiscalSettlementRepository.findByMunicipalityAndYear(
-            m.id,
-            params.financialYear,
-          ),
+          this.fiscalSettlementRepository.findByMunicipalityAndYear(m.id, params.financialYear),
         ),
       );
 
       const validSettlements = settlements.filter((s) => s !== null);
 
       if (validSettlements.length === 0) {
-        throw new Error(
-          `No settlement data found for year ${params.financialYear}`,
-        );
+        throw new Error(`No settlement data found for year ${params.financialYear}`);
       }
 
       // 3. FiscalYearSettlement → CategoryAggregation 変換
@@ -78,10 +69,9 @@ export class GetSankeyAggregationUsecase {
       // 5. 収支差額の調整
       const totalRevenue = rawAggregation.income.reduce((s, item) => s + item.totalAmount, 0);
       const totalExpense = rawAggregation.expense.reduce((s, item) => s + item.totalAmount, 0);
-      const adjusted = CategoryAggregation.adjustWithBalance(
-        aggregation,
-        { currentYearBalance: totalRevenue - totalExpense },
-      );
+      const adjusted = CategoryAggregation.adjustWithBalance(aggregation, {
+        currentYearBalance: totalRevenue - totalExpense,
+      });
 
       // 6. ドメインサービスでSankeyDataを構築
       const builder = new SankeyDataBuilder();
@@ -103,10 +93,7 @@ function mergeAggregations(
   a: CategoryAggregationType,
   b: CategoryAggregationType,
 ): CategoryAggregationType {
-  const mergeItems = (
-    itemsA: CategoryAggregationItem[],
-    itemsB: CategoryAggregationItem[],
-  ) => {
+  const mergeItems = (itemsA: CategoryAggregationItem[], itemsB: CategoryAggregationItem[]) => {
     const map = new Map<string, number>();
     for (const item of [...itemsA, ...itemsB]) {
       const key = item.subcategory ? `${item.category}::${item.subcategory}` : item.category;

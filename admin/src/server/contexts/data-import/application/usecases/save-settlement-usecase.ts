@@ -24,9 +24,7 @@ export class SaveSettlementUsecase {
   async execute(previews: SettlementPreview[]): Promise<SaveSettlementResult> {
     // insert または update のみ対象
     const targets = previews.filter(
-      (p) =>
-        (p.status === "insert" || p.status === "update") &&
-        p.municipalityId !== null,
+      (p) => (p.status === "insert" || p.status === "update") && p.municipalityId !== null,
     );
     const skipped = previews.length - targets.length;
     const errors: string[] = [];
@@ -50,8 +48,7 @@ export class SaveSettlementUsecase {
 
       return { savedCount, skippedCount: skipped, errors };
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "不明なエラーが発生しました";
+      const message = error instanceof Error ? error.message : "不明なエラーが発生しました";
       errors.push(message);
       return { savedCount: 0, skippedCount: skipped, errors };
     }
