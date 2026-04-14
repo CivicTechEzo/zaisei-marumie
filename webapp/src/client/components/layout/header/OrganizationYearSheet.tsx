@@ -38,9 +38,7 @@ export default function OrganizationYearSheet({
     }
   }, [pathname]);
 
-  const currentOrganization = organizations.municipalities.find(
-    (org) => org.slug === currentSlug,
-  );
+  const currentOrganization = organizations.municipalities.find((org) => org.slug === currentSlug);
 
   const handleSelect = (slug: string, year: number) => {
     const pathSegments = pathname.split("/");

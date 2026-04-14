@@ -36,8 +36,7 @@ export default function HeaderClient({ organizations, availableYears }: HeaderCl
 
   const currentSlug = slugFromPath ?? organizations.default;
   const defaultYear = availableYears[0] || 2022;
-  const currentYear =
-    yearFromPath && !Number.isNaN(yearFromPath) ? yearFromPath : defaultYear;
+  const currentYear = yearFromPath && !Number.isNaN(yearFromPath) ? yearFromPath : defaultYear;
 
   const logoHref = currentSlug ? `/o/${currentSlug}/${currentYear}/` : "/";
   const navigationItems = currentSlug ? getNavigationItems(currentSlug, currentYear) : [];

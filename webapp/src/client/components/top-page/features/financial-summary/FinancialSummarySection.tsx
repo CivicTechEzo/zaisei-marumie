@@ -37,8 +37,7 @@ function calculateFinancialData(sankeyData: SankeyData | null) {
   // 歳出総額: 「合計」ノードからの流出合計のうち、「(仕訳中)」を除く
   const expense = links
     .filter(
-      (link) =>
-        link.source === totalNode.id && (!pendingNode || link.target !== pendingNode.id),
+      (link) => link.source === totalNode.id && (!pendingNode || link.target !== pendingNode.id),
     )
     .reduce((sum, link) => sum + link.value, 0);
 

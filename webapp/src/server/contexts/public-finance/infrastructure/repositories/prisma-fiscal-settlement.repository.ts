@@ -1,6 +1,9 @@
 import "server-only";
 
-import type { PrismaClient, FiscalYearSettlement as PrismaFiscalYearSettlement } from "@prisma/client";
+import type {
+  PrismaClient,
+  FiscalYearSettlement as PrismaFiscalYearSettlement,
+} from "@prisma/client";
 import type { IFiscalSettlementRepository } from "@/server/contexts/public-finance/domain/repositories/fiscal-settlement-repository.interface";
 import type { FiscalYearSettlement } from "@/server/contexts/public-finance/domain/models/fiscal-year-settlement";
 
