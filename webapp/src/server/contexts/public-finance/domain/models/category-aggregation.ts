@@ -28,7 +28,7 @@ export interface CategoryAggregation {
  * - revCarryover: 繰越金（歳入の内訳に既に含まれるため adjustWithBalance では使用しない）
  * - currentYearBalance: 歳入合計 - 歳出合計（当年度の収支差額）
  */
-export interface BalanceInfo {
+interface BalanceInfo {
   currentYearBalance: number;
 }
 
