@@ -43,9 +43,7 @@ export default function Sidebar({
     },
     {
       title: "データ取り込み",
-      items: [
-        { href: "/import-settlement", label: "財政データ取り込み" },
-      ],
+      items: [{ href: "/import-settlement", label: "財政データ取り込み" }],
     },
   ];
 

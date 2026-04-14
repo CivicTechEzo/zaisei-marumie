@@ -30,9 +30,7 @@ export interface ImportSettlementResult {
   errors?: string[];
 }
 
-export async function importSettlementData(
-  yearCode: string,
-): Promise<ImportSettlementResult> {
+export async function importSettlementData(yearCode: string): Promise<ImportSettlementResult> {
   "use server";
 
   try {
@@ -47,10 +45,7 @@ export async function importSettlementData(
     let previewResult = getPreviewCache(typedYearCode);
     if (!previewResult) {
       const dataFetcher = new SoumuDataFetcher();
-      const previewUsecase = new PreviewSettlementUsecase(
-        repository,
-        dataFetcher,
-      );
+      const previewUsecase = new PreviewSettlementUsecase(repository, dataFetcher);
       previewResult = await previewUsecase.execute(typedYearCode);
     }
 
@@ -81,8 +76,7 @@ export async function importSettlementData(
     };
   } catch (error) {
     console.error("Settlement import error:", error);
-    const message =
-      error instanceof Error ? error.message : "サーバー内部エラーが発生しました";
+    const message = error instanceof Error ? error.message : "サーバー内部エラーが発生しました";
     return {
       ok: false,
       savedCount: 0,
