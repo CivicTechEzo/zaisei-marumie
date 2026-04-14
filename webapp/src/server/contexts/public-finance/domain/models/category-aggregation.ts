@@ -23,16 +23,6 @@ export interface CategoryAggregation {
 }
 
 /**
- * 残高情報（自治体財政向け）
- *
- * - revCarryover: 繰越金（歳入の内訳に既に含まれるため adjustWithBalance では使用しない）
- * - currentYearBalance: 歳入合計 - 歳出合計（当年度の収支差額）
- */
-interface BalanceInfo {
-  currentYearBalance: number;
-}
-
-/**
  * サブカテゴリ統合時のデフォルト上限数
  */
 export const DEFAULT_SUBCATEGORY_MAX_COUNT = 8;
@@ -80,29 +70,6 @@ export const CategoryAggregation = {
     return {
       income: consolidatedIncome,
       expense: consolidatedExpense,
-    };
-  },
-
-  /**
-   * 収支差額を支出側に追加
-   *
-   * 歳入合計 > 歳出合計の場合、差額を「翌年度繰越」として支出側に追加する。
-   * これによりサンキー図の左右バランスが取れる。
-   */
-  adjustWithBalance(data: CategoryAggregation, balance: BalanceInfo): CategoryAggregation {
-    if (balance.currentYearBalance <= 0) {
-      return data;
-    }
-
-    return {
-      income: [...data.income],
-      expense: [
-        ...data.expense,
-        {
-          category: "翌年度繰越",
-          totalAmount: balance.currentYearBalance,
-        },
-      ],
     };
   },
 };

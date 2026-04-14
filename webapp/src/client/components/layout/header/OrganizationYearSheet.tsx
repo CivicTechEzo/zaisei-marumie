@@ -3,19 +3,18 @@ import "client-only";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import type { OrganizationsResponse } from "@/types/organization";
-
-const AVAILABLE_YEARS = [2025, 2026] as const;
-const DEFAULT_YEAR = 2026;
+import type { MunicipalitiesResponse } from "@/types/organization";
 
 interface OrganizationYearSheetProps {
-  organizations: OrganizationsResponse;
+  organizations: MunicipalitiesResponse;
+  availableYears: number[];
   initialSlug?: string;
   initialYear?: number;
 }
 
 export default function OrganizationYearSheet({
   organizations,
+  availableYears,
   initialSlug,
   initialYear,
 }: OrganizationYearSheetProps) {
@@ -23,7 +22,7 @@ export default function OrganizationYearSheet({
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [currentSlug, setCurrentSlug] = useState(initialSlug || "");
-  const [currentYear, setCurrentYear] = useState(initialYear || DEFAULT_YEAR);
+  const [currentYear, setCurrentYear] = useState(initialYear || availableYears[0] || 2022);
 
   useEffect(() => {
     const pathSegments = pathname.split("/");
@@ -32,14 +31,16 @@ export default function OrganizationYearSheet({
       setCurrentSlug(pathSegments[2]);
       if (pathSegments[3]) {
         const yearFromPath = parseInt(pathSegments[3], 10);
-        if (AVAILABLE_YEARS.includes(yearFromPath as (typeof AVAILABLE_YEARS)[number])) {
+        if (!Number.isNaN(yearFromPath)) {
           setCurrentYear(yearFromPath);
         }
       }
     }
   }, [pathname]);
 
-  const currentOrganization = organizations.organizations.find((org) => org.slug === currentSlug);
+  const currentOrganization = organizations.municipalities.find(
+    (org) => org.slug === currentSlug,
+  );
 
   const handleSelect = (slug: string, year: number) => {
     const pathSegments = pathname.split("/");
@@ -81,7 +82,7 @@ export default function OrganizationYearSheet({
           <span className="text-[14px] leading-none text-black truncate w-full text-left">
             {currentOrganization?.displayName || "自治体を選択"}
           </span>
-          <span className="text-[9px] leading-none text-[#238778]">{currentYear}年</span>
+          <span className="text-[9px] leading-none text-[#238778]">{currentYear}年度</span>
         </span>
         <Image
           src="/icons/icon-chevron-down.svg"
@@ -107,9 +108,9 @@ export default function OrganizationYearSheet({
           <div className="absolute right-0 top-full mt-1 z-50 w-68 bg-white rounded-lg border border-black/50 shadow-lg py-3 max-h-[70vh] overflow-y-auto">
             {/* Organization Selection */}
             <div className="px-4 flex flex-col gap-1">
-              <p className="text-[11px] text-[#5a5a5a]">表示する団体名</p>
+              <p className="text-[11px] text-[#5a5a5a]">表示する自治体</p>
               <div className="flex flex-col">
-                {organizations.organizations.map((org) => (
+                {organizations.municipalities.map((org) => (
                   <button
                     key={org.slug}
                     type="button"
@@ -137,12 +138,7 @@ export default function OrganizationYearSheet({
                         </svg>
                       )}
                     </span>
-                    <span className="flex flex-col gap-0.5">
-                      <span className="text-xs text-gray-900">{org.displayName}</span>
-                      {org.orgName && (
-                        <span className="text-[8px] text-[#6a6a6a]">{org.orgName}</span>
-                      )}
-                    </span>
+                    <span className="text-xs text-gray-900">{org.displayName}</span>
                   </button>
                 ))}
               </div>
@@ -153,9 +149,9 @@ export default function OrganizationYearSheet({
 
             {/* Year Selection */}
             <div className="px-4 py-1 flex flex-col gap-2">
-              <p className="text-[11px] text-[#5a5a5a]">対象年</p>
-              <div className="flex gap-3">
-                {AVAILABLE_YEARS.map((year) => (
+              <p className="text-[11px] text-[#5a5a5a]">対象年度</p>
+              <div className="flex gap-3 flex-wrap">
+                {availableYears.map((year) => (
                   <button
                     key={year}
                     type="button"
@@ -172,7 +168,7 @@ export default function OrganizationYearSheet({
                         : undefined
                     }
                   >
-                    {year}年
+                    {year}年度
                   </button>
                 ))}
               </div>

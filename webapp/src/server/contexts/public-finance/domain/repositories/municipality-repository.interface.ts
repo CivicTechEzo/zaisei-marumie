@@ -1,12 +1,6 @@
-export interface MunicipalityData {
-  id: bigint;
-  slug: string;
-  displayName: string;
-  municipalityCode: string;
-}
+import type { Municipality } from "@/server/contexts/public-finance/domain/models/municipality";
 
 export interface IMunicipalityRepository {
-  findBySlug(slug: string): Promise<MunicipalityData | null>;
-  findBySlugs(slugs: string[]): Promise<MunicipalityData[]>;
-  findAll(): Promise<MunicipalityData[]>;
+  findBySlug(slug: string): Promise<Municipality | null>;
+  findAll(): Promise<Municipality[]>;
 }

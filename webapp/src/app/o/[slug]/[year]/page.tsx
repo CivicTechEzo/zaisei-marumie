@@ -11,10 +11,9 @@ import CashFlowSection from "@/client/components/top-page/CashFlowSection";
 import ProgressSection from "@/client/components/top-page/ProgressSection";
 import { loadTopPageData } from "@/server/contexts/public-finance/presentation/loaders/load-top-page-data";
 import { loadOrganizations } from "@/server/contexts/public-finance/presentation/loaders/load-organizations";
+import { loadAvailableYears } from "@/server/contexts/public-finance/presentation/loaders/load-available-years";
 
 export const revalidate = 300; // 5 minutes
-
-const DEFAULT_YEAR = 2022;
 
 interface OrgPageProps {
   params: Promise<{
@@ -26,11 +25,11 @@ interface OrgPageProps {
 export async function generateMetadata({ params }: OrgPageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  const { organizations } = await loadOrganizations();
-  const currentOrganization = organizations.find((org) => org.slug === slug);
+  const { municipalities } = await loadOrganizations();
+  const currentMunicipality = municipalities.find((m) => m.slug === slug);
 
-  const title = currentOrganization?.displayName
-    ? `${currentOrganization.displayName} - 自治体財政まる見え`
+  const title = currentMunicipality?.displayName
+    ? `${currentMunicipality.displayName} - 自治体財政まる見え`
     : "自治体財政まる見え";
 
   return {
@@ -44,25 +43,25 @@ export default async function OrgPage({ params }: OrgPageProps) {
   // 年度の妥当性をチェック
   const yearNumber = parseInt(yearParam, 10);
   if (Number.isNaN(yearNumber) || yearNumber < 2000 || yearNumber > 2030) {
-    redirect(`/o/${slug}/${DEFAULT_YEAR}`);
+    // 利用可能な最新年度にリダイレクト
+    const { latestYear } = await loadAvailableYears(slug);
+    redirect(`/o/${slug}/${latestYear ?? 2022}`);
   }
-  const financialYear = yearNumber;
+  const fiscalYear = yearNumber;
 
   // slugの妥当性をチェックし、必要に応じてリダイレクト
-  const { default: defaultSlug, organizations } = await loadOrganizations();
-  if (!organizations.some((org) => org.slug === slug)) {
-    redirect(`/o/${defaultSlug}/${financialYear}`);
+  const { default: defaultSlug, municipalities } = await loadOrganizations();
+  if (!municipalities.some((m) => m.slug === slug)) {
+    redirect(`/o/${defaultSlug}/${fiscalYear}`);
   }
 
-  const slugs = [slug];
-
-  // 現在のslugに対応する組織を取得
-  const currentOrganization = organizations.find((org) => org.slug === slug);
+  // 現在のslugに対応する自治体を取得
+  const currentMunicipality = municipalities.find((m) => m.slug === slug);
 
   // サンキー図データを取得
   const data = await loadTopPageData({
-    slugs,
-    financialYear,
+    slug,
+    fiscalYear,
   }).catch((error) => {
     console.error("loadTopPageData error:", error);
     return null;
@@ -73,7 +72,7 @@ export default async function OrgPage({ params }: OrgPageProps) {
       <CashFlowSection
         purpose={data?.purpose ?? null}
         nature={data?.nature ?? null}
-        organizationName={currentOrganization?.displayName}
+        organizationName={currentMunicipality?.displayName}
       />
       <TransparencySection title="あなたのまちのお金の使いみち、見てみませんか？" />
 

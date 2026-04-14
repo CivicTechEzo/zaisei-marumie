@@ -1,10 +1,9 @@
-export type OrganizationData = {
+export type MunicipalityData = {
   slug: string;
-  orgName: string | null;
   displayName: string;
 };
 
-export type OrganizationsResponse = {
+export type MunicipalitiesResponse = {
   default: string | null;
-  organizations: OrganizationData[];
+  municipalities: MunicipalityData[];
 };
