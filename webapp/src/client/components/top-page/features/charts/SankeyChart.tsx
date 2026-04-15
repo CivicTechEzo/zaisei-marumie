@@ -5,6 +5,7 @@ import { ResponsiveSankey } from "@nivo/sankey";
 import { useState } from "react";
 import type { MouseEvent } from "react";
 import { createPortal } from "react-dom";
+import { FRIENDLY_LABEL_MAP } from "@/shared/accounting/account-category";
 import type { SankeyData } from "@/types/sankey";
 import InteractiveRect from "./InteractiveRect";
 import {
@@ -40,6 +41,13 @@ const DIMENSIONS = {
   FONT_SIZE_MOBILE: "7px",
   FONT_SIZE_SUB_DESKTOP: "11px",
   FONT_SIZE_SUB_MOBILE: "6px",
+  // 正式名称（カッコ書き）の補助フォントサイズ — 平易表現の約 0.7 倍
+  FONT_SIZE_FORMAL_DESKTOP: "10.5px",
+  FONT_SIZE_FORMAL_MOBILE: "6px",
+
+  // 正式名称（カッコ書き）の行間
+  FORMAL_LINE_HEIGHT_DESKTOP: 12,
+  FORMAL_LINE_HEIGHT_MOBILE: 8,
 
   // その他
   TSPAN_DY_DESKTOP: 16,
@@ -370,7 +378,16 @@ const renderPrimaryLabel = (
   textAnchor: "start" | "middle" | "end" | "inherit",
   isMobile: boolean,
 ) => {
-  const label = node.label || node.id;
+  const originalLabel = node.label || node.id;
+  const friendlyLabel = FRIENDLY_LABEL_MAP[originalLabel];
+
+  // 1行目に表示するラベル: friendlyLabel があれば平易表現、なければ正式名称
+  const primaryLabel = friendlyLabel ?? originalLabel;
+  // friendlyLabel が定義されている場合のみ、正式名称をカッコ書きで補助表示
+  // ノード幅が狭いモバイルではカッコ書きを省略（レスポンシブ対応）
+  const formalLabel =
+    friendlyLabel && friendlyLabel !== originalLabel && !isMobile ? `（${originalLabel}）` : null;
+
   const isSubcategory = node.nodeType === "income-sub" || node.nodeType === "expense-sub";
 
   const fontSize = !isMobile
@@ -380,32 +397,16 @@ const renderPrimaryLabel = (
     : isSubcategory
       ? DIMENSIONS.FONT_SIZE_SUB_MOBILE
       : DIMENSIONS.FONT_SIZE_MOBILE;
+  const formalFontSize = !isMobile
+    ? DIMENSIONS.FONT_SIZE_FORMAL_DESKTOP
+    : DIMENSIONS.FONT_SIZE_FORMAL_MOBILE;
 
   // 行を決定
   const maxChars = isSubcategory
     ? TEXT_CONFIG.MAX_CHARS_PER_LINE_SUB
     : TEXT_CONFIG.MAX_CHARS_PER_LINE;
-  const lines = splitLabel(label, maxChars);
+  const lines = splitLabel(primaryLabel, maxChars);
 
-  // 1行の場合
-  if (lines.length === 1) {
-    return (
-      <text
-        key={`${node.id}-primary`}
-        x={x}
-        y={node.y + node.height / 2}
-        textAnchor={textAnchor as "start" | "middle" | "end"}
-        dominantBaseline="middle"
-        fill={TEXT}
-        fontSize={fontSize}
-        fontWeight="bold"
-      >
-        {lines[0]}
-      </text>
-    );
-  }
-
-  // 複数行の場合
   const lineHeight = isSubcategory
     ? isMobile
       ? DIMENSIONS.LINE_HEIGHT_SUB_MOBILE
@@ -413,14 +414,19 @@ const renderPrimaryLabel = (
     : isMobile
       ? 10 // モバイルでのメインカテゴリ行間
       : 16; // デスクトップでのメインカテゴリ行間
-  const totalTextHeight = (lines.length - 1) * lineHeight;
+  const formalLineHeight = isMobile
+    ? DIMENSIONS.FORMAL_LINE_HEIGHT_MOBILE
+    : DIMENSIONS.FORMAL_LINE_HEIGHT_DESKTOP;
+
+  // 全体の高さ（1行目の baseline からの累積）と垂直中央寄せ用オフセット
+  const totalTextHeight = (lines.length - 1) * lineHeight + (formalLabel ? formalLineHeight : 0);
 
   return (
     <text
       key={`${node.id}-primary`}
       x={x}
       y={node.y + node.height / 2 - totalTextHeight / 2}
-      textAnchor={textAnchor}
+      textAnchor={textAnchor as "start" | "middle" | "end"}
       fill={TEXT}
       fontSize={fontSize}
       fontWeight="bold"
@@ -431,6 +437,18 @@ const renderPrimaryLabel = (
           {line}
         </tspan>
       ))}
+      {formalLabel && (
+        <tspan
+          key={`${node.id}-formal`}
+          x={x}
+          dy={formalLineHeight}
+          fontSize={formalFontSize}
+          fontWeight="normal"
+          fill="#6B7280"
+        >
+          {formalLabel}
+        </tspan>
+      )}
     </text>
   );
 };

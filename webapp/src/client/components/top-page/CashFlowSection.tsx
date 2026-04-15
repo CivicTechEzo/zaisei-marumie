@@ -29,7 +29,7 @@ export default function CashFlowSection({
       <CardHeader
         icon={<Image src="/icons/icon-cashflow.svg" alt="Cash flow icon" width={30} height={31} />}
         municipalityName={municipalityName || "未登録の自治体"}
-        title="収支の流れ"
+        title="お金の流れ"
         subtitle="どこからお金を得て、何に使っているか"
       />
 
@@ -47,7 +47,7 @@ export default function CashFlowSection({
               : "border-transparent text-[#9CA3AF] hover:text-gray-600"
           }`}
         >
-          目的別
+          なにに使った？（目的別）
         </button>
         <button
           type="button"
@@ -58,7 +58,7 @@ export default function CashFlowSection({
               : "border-transparent text-[#9CA3AF] hover:text-gray-600"
           }`}
         >
-          性質別
+          どう使った？（性質別）
         </button>
       </div>
 
