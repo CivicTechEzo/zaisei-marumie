@@ -126,8 +126,9 @@ export const FISCAL_CATEGORY_BY_FIELD: Record<string, FiscalCategory> =
  * サンキー図など、表示時にラベルを平易表現へ解決するために使用する。
  */
 export const FRIENDLY_LABEL_MAP: Record<string, string> = Object.fromEntries(
-  ALL_FISCAL_CATEGORIES.filter((c) => c.friendlyLabel !== undefined).map((c) => [
-    c.label,
-    c.friendlyLabel as string,
-  ]),
+  ALL_FISCAL_CATEGORIES
+    .filter(
+      (c): c is FiscalCategory & { friendlyLabel: string } => c.friendlyLabel !== undefined,
+    )
+    .map((c) => [c.label, c.friendlyLabel]),
 );

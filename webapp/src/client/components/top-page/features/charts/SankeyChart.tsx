@@ -17,6 +17,7 @@ import {
 
 // 定数定義
 const TEXT = "#1F2937"; // テキスト色
+const TEXT_FORMAL = "#6B7280"; // 正式名称（カッコ書き）のテキスト色
 
 const DIMENSIONS = {
   // ノード幅
@@ -43,10 +44,12 @@ const DIMENSIONS = {
   FONT_SIZE_SUB_MOBILE: "6px",
   // 正式名称（カッコ書き）の補助フォントサイズ — 平易表現の約 0.7 倍
   FONT_SIZE_FORMAL_DESKTOP: "10.5px",
-  FONT_SIZE_FORMAL_MOBILE: "6px",
+  // モバイルでは現状カッコ書きを非表示にしているが、将来表示する場合に備えてデスクトップと同比率で定義
+  FONT_SIZE_FORMAL_MOBILE: "5px",
 
   // 正式名称（カッコ書き）の行間
   FORMAL_LINE_HEIGHT_DESKTOP: 12,
+  // モバイルでは現状カッコ書きを非表示にしているが、将来表示する場合に備えて定義
   FORMAL_LINE_HEIGHT_MOBILE: 8,
 
   // その他
@@ -444,7 +447,7 @@ const renderPrimaryLabel = (
           dy={formalLineHeight}
           fontSize={formalFontSize}
           fontWeight="normal"
-          fill="#6B7280"
+          fill={TEXT_FORMAL}
         >
           {formalLabel}
         </tspan>
