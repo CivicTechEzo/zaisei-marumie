@@ -25,17 +25,17 @@ export function formatApproxAmount(amount: number): string {
     if (oku === 0) {
       return `約${sign}${cho}兆円`;
     }
-    return `約${sign}${cho}兆${oku.toLocaleString()}億円`;
+    return `約${sign}${cho}兆${oku.toLocaleString("ja-JP")}億円`;
   }
 
   // 1億円以上（1万万円以上）
   if (manAmount >= 10000) {
     const oku = Math.floor(manAmount / 10000);
-    return `約${sign}${oku.toLocaleString()}億円`;
+    return `約${sign}${oku.toLocaleString("ja-JP")}億円`;
   }
 
   // 1億円未満
-  return `約${sign}${manAmount.toLocaleString()}万円`;
+  return `約${sign}${manAmount.toLocaleString("ja-JP")}万円`;
 }
 
 /**
