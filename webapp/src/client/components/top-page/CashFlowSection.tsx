@@ -6,6 +6,7 @@ import CardHeader from "@/client/components/layout/CardHeader";
 import MainColumnCard from "@/client/components/layout/MainColumnCard";
 import SankeyChart from "@/client/components/top-page/features/charts/SankeyChart";
 import FinancialSummarySection from "@/client/components/top-page/features/financial-summary/FinancialSummarySection";
+import SummaryCard from "@/client/components/top-page/SummaryCard";
 
 import type { SankeyData } from "@/types/sankey";
 
@@ -13,12 +14,14 @@ interface CashFlowSectionProps {
   purpose?: SankeyData | null;
   nature?: SankeyData | null;
   municipalityName?: string;
+  year: number;
 }
 
 export default function CashFlowSection({
   purpose,
   nature,
   municipalityName,
+  year,
 }: CashFlowSectionProps) {
   const [activeTab, setActiveTab] = useState<"purpose" | "nature">("purpose");
 
@@ -31,6 +34,13 @@ export default function CashFlowSection({
         municipalityName={municipalityName || "未登録の自治体"}
         title="お金の流れ"
         subtitle="どこからお金を得て、何に使っているか"
+      />
+
+      {/* ひとことサマリー */}
+      <SummaryCard
+        sankeyData={purpose ?? null}
+        displayName={municipalityName || "未登録の自治体"}
+        year={year}
       />
 
       {/* 財務サマリー */}

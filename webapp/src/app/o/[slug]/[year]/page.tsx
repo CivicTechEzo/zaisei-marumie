@@ -73,6 +73,7 @@ export default async function OrgPage({ params }: OrgPageProps) {
         purpose={data?.purpose ?? null}
         nature={data?.nature ?? null}
         municipalityName={currentMunicipality?.displayName}
+        year={fiscalYear}
       />
       <TransparencySection title="あなたのまちのお金の使いみち、見てみませんか？" />
 
