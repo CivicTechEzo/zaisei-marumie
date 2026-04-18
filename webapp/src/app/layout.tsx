@@ -5,6 +5,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "@/client/components/layout/footer/Footer";
 import Header from "@/client/components/layout/header/Header";
+import { loadMunicipalities } from "@/server/contexts/public-finance/presentation/loaders/load-municipalities";
 
 // Noto Sans JP for Japanese text with proper weights
 const notoSansJP = Noto_Sans_JP({
@@ -64,11 +65,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { default: defaultSlug, municipalities } = await loadMunicipalities();
+  const footerFallbackSlug = defaultSlug ?? municipalities[0]?.slug ?? "";
+
   return (
     <html lang="ja">
       <head />
@@ -78,7 +82,7 @@ export default function RootLayout({
         <Header />
         <div className="flex-grow">{children}</div>
         <div className="mt-0 sm:mt-16">
-          <Footer />
+          <Footer fallbackSlug={footerFallbackSlug} />
         </div>
         <SpeedInsights sampleRate={0.1} />
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_TRACKING_ID || ""} />

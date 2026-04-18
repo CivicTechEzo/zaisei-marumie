@@ -77,11 +77,15 @@ const socialLinks = [
   },
 ];
 
-export default function Footer() {
+interface FooterProps {
+  fallbackSlug: string;
+}
+
+export default function Footer({ fallbackSlug }: FooterProps) {
   const pathname = usePathname();
 
-  // 現在のslugを取得（/o/[slug]/... の形式の場合、なければdefaultを使用）
-  const currentSlug = pathname.startsWith("/o/") ? pathname.split("/")[2] : "team-mirai";
+  // 現在のslugを取得（/o/[slug]/... の形式の場合、なければサーバーから渡されたデフォルトを使用）
+  const currentSlug = pathname.startsWith("/o/") ? pathname.split("/")[2] : fallbackSlug;
 
   const textLinks = getTextLinks(currentSlug);
 
