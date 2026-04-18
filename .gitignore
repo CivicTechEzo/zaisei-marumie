@@ -1,13 +1,5 @@
 g See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 data/*
-!data/sampledata.csv
-!data/test_current_liabilities.csv
-!data/sample_donor_import.csv
-!data/reports/
-data/reports/*
-!data/reports/report_3_2025.xml
-!data/reports/minimum_valid.xml
-!data/reports/donation-aggregation-sample.xml
 */.next/*
 .next
 prompts
