@@ -28,7 +28,7 @@ export default function ExplanationSection() {
             データの出典
           </h3>
           <p className="text-[11px] sm:text-[15px] leading-[1.82] sm:leading-[1.87] tracking-[0.01em] text-gray-500 sm:text-gray-800 font-medium sm:font-normal font-japanese">
-            本サイトに掲載している財政データは、各自治体が公開している決算カード・決算統計等の公開データに基づいています。
+            本サイトに掲載している財政データは、総務省が公表している「市町村別決算状況調」に基づいています。
           </p>
         </div>
 
@@ -37,7 +37,7 @@ export default function ExplanationSection() {
             免責事項
           </h3>
           <p className="text-[11px] sm:text-[15px] leading-[1.82] sm:leading-[1.87] tracking-[0.01em] text-gray-500 sm:text-gray-800 font-medium sm:font-normal font-japanese">
-            本サイトで公開するデータは、可能な限り正確かつ最新の情報を反映するよう努めていますが、その正確性・完全性・即時性について保証するものではありません。正式な財政情報は、各自治体が公開する決算書等の公式資料をご確認ください。
+            本サイトで公開するデータは、可能な限り正確かつ最新の情報を反映するよう努めていますが、その正確性・完全性・即時性について保証するものではありません。正式な財政情報は、総務省の公表データおよび各自治体の決算書等の公式資料をご確認ください。
           </p>
         </div>
       </div>
