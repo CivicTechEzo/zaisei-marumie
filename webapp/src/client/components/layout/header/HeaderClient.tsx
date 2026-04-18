@@ -54,9 +54,8 @@ export default function HeaderClient({ municipalities, availableYears }: HeaderC
             {/* Logo */}
             <div className="flex items-center">
               <div className="w-14 h-12 xl:w-12 xl:h-11 relative">
-                {/* TODO: CivicTechEzo ロゴアセット未作成。用意でき次第差し替え */}
                 <Image
-                  src="/logos/team-mirai-logo.svg"
+                  src="/logos/civictechezo-logo.svg"
                   alt="CivicTechEzo"
                   fill
                   className="object-contain"

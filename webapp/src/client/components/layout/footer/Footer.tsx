@@ -107,10 +107,9 @@ export default function Footer({ fallbackSlug }: FooterProps) {
     <footer className="w-full bg-gradient-to-tl from-[#BCECD3] to-[#64D8C6] px-8 lg:px-[117px] py-12 lg:pt-12 lg:pb-9">
       <div className="max-w-[1278px] mx-auto flex flex-col items-center gap-9 lg:gap-10">
         {/* Logo - PC版のみ表示 */}
-        {/* TODO: CivicTechEzo ロゴアセット未作成。用意でき次第差し替え */}
         <div className="hidden lg:block w-[150px] h-[127px] relative">
           <Image
-            src="/logos/team-mirai-logo.svg"
+            src="/logos/civictechezo-logo.svg"
             alt="CivicTechEzo"
             fill
             className="object-contain"
@@ -169,10 +168,9 @@ export default function Footer({ fallbackSlug }: FooterProps) {
         </div>
 
         {/* Logo - SP版のみ表示 */}
-        {/* TODO: CivicTechEzo ロゴアセット未作成。用意でき次第差し替え */}
         <div className="block lg:hidden w-[150px] h-[127px] relative">
           <Image
-            src="/logos/team-mirai-logo.svg"
+            src="/logos/civictechezo-logo.svg"
             alt="CivicTechEzo"
             fill
             className="object-contain"
