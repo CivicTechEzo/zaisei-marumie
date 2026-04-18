@@ -5,7 +5,7 @@ test.describe("ログインページ", () => {
 		const response = await page.goto("/login");
 
 		expect(response?.status()).toBe(200);
-		await expect(page).toHaveTitle(/政治資金ダッシュボード/);
+		await expect(page).toHaveTitle(/自治体財政データ管理画面/);
 	});
 
 	test("正しい認証情報でログインに成功する", async ({ page }) => {
