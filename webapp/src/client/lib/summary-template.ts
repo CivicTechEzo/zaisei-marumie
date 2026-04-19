@@ -2,7 +2,7 @@ import { FRIENDLY_LABEL_MAP } from "@/shared/accounting/account-category";
 import type { SankeyData } from "@/types/sankey";
 import { extractSankeyMetrics } from "@/client/lib/sankey-metrics";
 
-export interface SummaryParams {
+interface SummaryParams {
   sankeyData: SankeyData;
   displayName: string;
   year: number;
@@ -11,7 +11,7 @@ export interface SummaryParams {
 /**
  * 金額を「約X兆Y億円」「約X億円」「約X,000万円」形式でフォーマットする
  */
-export function formatApproxAmount(amount: number): string {
+function formatApproxAmount(amount: number): string {
   const absAmount = Math.abs(amount);
   const sign = amount < 0 ? "-" : "";
 

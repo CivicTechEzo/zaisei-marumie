@@ -6,4 +6,3 @@
 
 // 決算データインポート関連
 export { FISCAL_YEAR_OPTIONS } from "@/server/contexts/data-import/domain/models/fiscal-year-code";
-export type { FiscalYearCodeString } from "@/server/contexts/data-import/domain/models/fiscal-year-code";

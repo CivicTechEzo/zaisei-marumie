@@ -11,4 +11,5 @@ export const fetchSettlementPreviewSchema = z.object({
   }),
 });
 
+/** @public */
 export type FetchSettlementPreviewInput = z.infer<typeof fetchSettlementPreviewSchema>;

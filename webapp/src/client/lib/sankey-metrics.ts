@@ -1,6 +1,6 @@
 import type { SankeyData } from "@/types/sankey";
 
-export interface SankeyMetrics {
+interface SankeyMetrics {
   /** 歳入総額 */
   income: number;
   /** 歳出総額 */

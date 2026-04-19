@@ -15,8 +15,6 @@ import type { ParsedExcelData } from "@/server/contexts/data-import/domain/servi
 import { validateSettlementPreviews } from "@/server/contexts/data-import/domain/services/settlement-validator";
 import type { ISoumuDataFetcher } from "@/server/contexts/data-import/domain/services/soumu-data-fetcher.interface";
 
-export type { PreviewSettlementResult };
-
 export class PreviewSettlementUsecase {
   constructor(
     private readonly repository: ISettlementRepository,

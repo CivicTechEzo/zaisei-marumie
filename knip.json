@@ -1,10 +1,13 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
+  "tags": ["-public"],
   "ignoreDependencies": [
     "server-only",
     "client-only",
     "tailwindcss",
-    "critters"
+    "critters",
+    "apexcharts",
+    "react-apexcharts"
   ],
   "workspaces": {
     ".": {
@@ -18,7 +21,11 @@
         "src/app/**/not-found.tsx"
       ],
       "project": ["src/**/*.{ts,tsx}"],
-      "ignore": ["src/client/components/ui/**/*"]
+      "ignore": [
+        "src/client/components/ui/**/*",
+        "src/client/components/common/LinkCard.tsx",
+        "src/client/components/top-page/features/charts/MonthlyChart.tsx"
+      ]
     },
     "admin": {
       "entry": [

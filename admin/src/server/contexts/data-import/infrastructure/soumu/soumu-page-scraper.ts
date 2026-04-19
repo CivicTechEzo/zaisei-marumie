@@ -9,7 +9,7 @@
 import * as cheerio from "cheerio";
 import type { FiscalYearCodeString } from "@/server/contexts/data-import/domain/models/fiscal-year-code";
 
-export interface ExcelFileUrls {
+interface ExcelFileUrls {
   survey: string; // (1) 調査票
   revenue: string; // (2) 歳入決算額
   expensePurpose: string; // (3) 目的別歳出決算額

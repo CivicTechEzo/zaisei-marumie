@@ -9,7 +9,7 @@ import type { SettlementPreview } from "@/server/contexts/data-import/domain/mod
 import type { ISettlementRepository } from "@/server/contexts/data-import/domain/repositories/settlement-repository.interface";
 import type { ICacheInvalidator } from "@/server/contexts/shared/domain/services/cache-invalidator.interface";
 
-export interface SaveSettlementResult {
+interface SaveSettlementResult {
   savedCount: number;
   skippedCount: number;
   errors: string[];

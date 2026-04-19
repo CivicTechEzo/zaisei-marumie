@@ -44,7 +44,8 @@ export async function parseExcelFromUrl(url: string): Promise<RawExcelRow[]> {
 }
 
 /**
- * Excelバッファからパースする（CLIスクリプト用）
+ * Excelバッファからパースする（CLIスクリプト・アップロードAPI用）
+ * @public
  */
 export async function parseExcelFromBuffer(buffer: Buffer): Promise<RawExcelRow[]> {
   const data = new Uint8Array(buffer);

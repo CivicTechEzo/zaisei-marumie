@@ -24,6 +24,7 @@ export interface CategoryAggregation {
 
 /**
  * サブカテゴリ統合時のデフォルト上限数
+ * @public
  */
 export const DEFAULT_SUBCATEGORY_MAX_COUNT = 8;
 
