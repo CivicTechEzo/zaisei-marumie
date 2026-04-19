@@ -3,8 +3,8 @@ import { test, expect } from "@playwright/test";
 test.describe("ダッシュボード", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto("/login");
-		await page.getByLabel("Email").fill("foo@example.com");
-		await page.getByLabel("Password").fill("foo@example.com");
+		await page.getByLabel("Email").fill("admin@example.com");
+		await page.getByLabel("Password").fill("admin@example.com");
 		await page.getByRole("button", { name: "ログイン" }).click();
 		await expect(page).toHaveURL("/");
 	});

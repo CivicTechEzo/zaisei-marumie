@@ -11,8 +11,8 @@ test.describe("ログインページ", () => {
 	test("正しい認証情報でログインに成功する", async ({ page }) => {
 		await page.goto("/login");
 
-		await page.getByLabel("Email").fill("foo@example.com");
-		await page.getByLabel("Password").fill("foo@example.com");
+		await page.getByLabel("Email").fill("admin@example.com");
+		await page.getByLabel("Password").fill("admin@example.com");
 		await page.getByRole("button", { name: "ログイン" }).click();
 
 		// ダッシュボードにリダイレクトされることを確認
@@ -23,7 +23,7 @@ test.describe("ログインページ", () => {
 	test("間違ったパスワードでログインに失敗する", async ({ page }) => {
 		await page.goto("/login");
 
-		await page.getByLabel("Email").fill("foo@example.com");
+		await page.getByLabel("Email").fill("admin@example.com");
 		await page.getByLabel("Password").fill("wrongpassword");
 		await page.getByRole("button", { name: "ログイン" }).click();
 

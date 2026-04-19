@@ -120,8 +120,8 @@ Supabase、webapp（ポート 3000）、admin（ポート 3001）が同時に起
 
 | ロール | Email | Password |
 |--------|-------|----------|
-| Admin | foo@example.com | foo@example.com |
-| User | bar@example.com | bar@example.com |
+| Admin | admin@example.com | admin@example.com |
+| User | user@example.com | user@example.com |
 
 ## データベースのマイグレーション
 

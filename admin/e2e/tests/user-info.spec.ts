@@ -3,8 +3,8 @@ import { test, expect } from "@playwright/test";
 test.describe("ユーザー情報", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto("/login");
-		await page.getByLabel("Email").fill("foo@example.com");
-		await page.getByLabel("Password").fill("foo@example.com");
+		await page.getByLabel("Email").fill("admin@example.com");
+		await page.getByLabel("Password").fill("admin@example.com");
 		await page.getByRole("button", { name: "ログイン" }).click();
 		await expect(page).toHaveURL("/");
 	});
@@ -19,7 +19,7 @@ test.describe("ユーザー情報", () => {
 		test("ログイン中のユーザーのメールアドレスが表示される", async ({ page }) => {
 			await page.goto("/user-info");
 
-			await expect(page.getByText("foo@example.com")).toBeVisible();
+			await expect(page.getByText("admin@example.com")).toBeVisible();
 		});
 
 		test("ロール情報が表示される", async ({ page }) => {

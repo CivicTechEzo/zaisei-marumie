@@ -12,8 +12,8 @@ pnpm db:seed
 ```
 
 これで以下のテストユーザーが作成されます：
-- **Email**: `foo@example.com`
-- **Password**: `bar@example.com`
+- **Email**: `admin@example.com`
+- **Password**: `admin@example.com`
 
 **環境変数を設定する**
    - `./admin/.env.example` を `./admin/.env.local` にコピー
